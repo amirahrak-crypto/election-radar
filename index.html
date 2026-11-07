@@ -518,7 +518,7 @@ Return ONLY JSON, Hebrew text, neutral and factual:
     const knessetDate = calDate("knesset"), mDeadline = calDate("mandate_deadline");
     const sworn = st.knesset_sworn === true || (st.knesset_sworn !== false && knessetDate && daysTo(knessetDate) < 0);
     let stage = st.stage || (st.mandate && st.mandate.holder ? "forming" : "consultations");
-    if (stage === "mandate" && st.mandate && st.mandate.holder) stage = "forming";
+    if (stage === "mandate" && st.mandate && st.mandate.holder && st.mandate.given && daysTo(st.mandate.given) <= 0) stage = "forming";
     const map = { results:0, consultations:1, mandate:2, forming:3, extension:3, second_mandate:3, knesset_61:3, confidence:4, government:5, new_elections:-1 };
     return { b, st, cal, knessetDate, mDeadline, sworn, stage, idx: map[stage] ?? 1 };
   }
@@ -563,7 +563,9 @@ Return ONLY JSON, Hebrew text, neutral and factual:
       // status hero
       const m = st.mandate || {};
       let mandateTile;
-      if (m.holder && m.given) {
+      if (m.holder && m.given && daysTo(m.given) > 0) {
+        mandateTile = `<div class="tile"><div class="l">המנדט להרכבת ממשלה</div><div class="v">${esc(m.holder)}</div><div class="s">הנשיא הודיע: יוטל רשמית <b>${inDays(daysTo(m.given))}</b>${m.time ? ` ב־${esc(m.time)}` : ""}</div><div class="s" style="color:var(--muted)">28 הימים יתחילו מהטקס</div><div class="prog"><i style="width:3%"></i></div></div>`;
+      } else if (m.holder && m.given) {
         const used = Math.max(0, -daysTo(m.given)); const total = m.extended ? 42 : 28; const left = total - used;
         mandateTile = `<div class="tile"><div class="l">המנדט להרכבת ממשלה</div><div class="v">${esc(m.holder)}</div><div class="s">${left >= 0 ? `נותרו <b>${left}</b> ימים מתוך ${total}` : "המועד חלף"}${!m.extended ? " · אפשרות להארכה עד 14" : ""}</div><div class="prog ${left <= 7 ? "bad" : left <= 14 ? "warn" : ""}"><i style="width:${Math.min(100, used / total * 100)}%"></i></div></div>`;
       } else {

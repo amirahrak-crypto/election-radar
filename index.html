@@ -261,6 +261,58 @@ main{padding:12px 12px 110px}
 .install b{color:var(--ink)}
 .install .act{flex:none;background:var(--ink);color:var(--bg);border-radius:10px;padding:8px 12px;font-weight:800}
 .install .cl{flex:none;color:var(--muted);font-size:18px;padding:4px}
+
+/* ===== polish ===== */
+body{letter-spacing:-.1px}
+.status{box-shadow:0 1px 0 rgba(255,255,255,.04) inset,0 20px 40px -20px rgba(0,0,0,.6)}
+.tile{position:relative;overflow:hidden;min-height:118px;display:flex;flex-direction:column}
+.tile .l{display:flex;align-items:center;gap:6px}
+.tile .v{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tile .s{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tile .foot2{margin-top:auto;padding-top:8px}
+.bign{display:flex;align-items:flex-end;gap:7px;margin-top:4px}
+.bign b{font-size:36px;font-weight:900;line-height:.82;letter-spacing:-1.5px}
+.bign span{font-size:11.5px;color:var(--muted);font-weight:700;line-height:1.15;padding-bottom:1px}
+.chip2{display:inline-flex;align-items:center;gap:5px;margin-top:6px;background:rgba(69,195,255,.12);color:var(--cyan);border:1px solid rgba(69,195,255,.25);border-radius:8px;padding:2px 8px;font-size:12px;font-weight:800;white-space:nowrap;align-self:flex-start}
+.chip2.a{background:rgba(255,178,36,.12);color:var(--amber);border-color:rgba(255,178,36,.28)}
+.step{font-size:11px;min-width:58px}
+.step.cur .d{animation:ring 2s infinite}
+@keyframes ring{0%{box-shadow:0 0 0 0 rgba(69,195,255,.45)}70%{box-shadow:0 0 0 8px rgba(69,195,255,0)}100%{box-shadow:0 0 0 0 rgba(69,195,255,0)}}
+.step small{display:block;font-size:9.5px;color:var(--dim);font-weight:700;margin-top:1px}
+.sc{width:32px;height:32px;border-radius:10px;justify-content:center;gap:0;padding:0;background:var(--p3);margin-top:1px}
+.sc b{font-size:15px;color:var(--ink2)}
+.sc i{display:none}
+.sc.i9{background:rgba(255,68,88,.15)} .sc.i9 b{color:var(--red)}
+.sc.i7{background:rgba(255,178,36,.13)} .sc.i7 b{color:var(--amber)}
+.sc.i5{background:rgba(69,195,255,.12)} .sc.i5 b{color:var(--cyan)}
+.st{padding:13px 12px;transition:background .15s,transform .15s}
+.st:active{transform:scale(.992)}
+.st.big{padding:16px 14px 15px;background:linear-gradient(180deg,rgba(255,255,255,.025),transparent)}
+.st.big .sc{width:40px;height:40px;border-radius:12px}
+.st.big .sc b{font-size:19px}
+.tt{font-size:16px;line-height:1.42}
+.kk{gap:5px;font-size:11.5px}
+.go{width:30px;height:30px;border-radius:9px;background:transparent;border-color:var(--line)}
+.flash{animation:flash 2.4s ease}
+@keyframes flash{0%{background:rgba(69,195,255,.18)}100%{background:transparent}}
+.now{scroll-snap-type:x mandatory;scroll-padding:0 12px}
+.nw{scroll-snap-align:start;transition:transform .15s}
+.nw:active{transform:scale(.98)}
+.nav button::after{display:none}
+.nav button svg{width:48px;height:30px;padding:4px 13px;border-radius:15px;box-sizing:border-box;transition:background .2s}
+.nav button.on svg{background:rgba(69,195,255,.14);color:var(--cyan)}
+.nav .n{top:3px;left:calc(50% - 26px)}
+#view.fade{animation:fade .22s ease}
+@keyframes fade{from{opacity:.25;transform:translateY(5px)}to{opacity:1;transform:none}}
+.sk{border-radius:14px;background:linear-gradient(90deg,var(--p1) 25%,var(--p2) 50%,var(--p1) 75%);background-size:200% 100%;animation:sk 1.3s infinite linear;border:1px solid var(--line)}
+@keyframes sk{from{background-position:200% 0}to{background-position:-200% 0}}
+.sheet{backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+.panel{transition:transform .2s ease}
+.grab{width:44px;height:5px;margin:2px auto 14px;cursor:grab}
+#ptr{position:fixed;top:calc(64px + env(safe-area-inset-top));left:50%;z-index:39;width:34px;height:34px;margin-left:-17px;border-radius:50%;background:var(--p2);border:1px solid var(--line2);display:grid;place-items:center;color:var(--cyan);opacity:0;transform:translateY(-40px);transition:opacity .15s}
+#ptr.go svg{animation:spin .8s linear infinite}
+.h{font-size:12.5px;letter-spacing:.2px}
+.brief li{font-size:14.5px}
 </style>
 </head>
 <body>
@@ -280,7 +332,8 @@ main{padding:12px 12px 110px}
 <div id="toasts"></div>
 <main class="wrap">
   <div id="stale" class="stale hide"></div>
-  <div id="view"><div class="empty">טוען את חדר המצב…</div></div>
+  <div id="view"><div class="sk" style="height:300px"></div><div class="sk" style="height:120px;margin-top:12px"></div><div class="sk" style="height:76px;margin-top:22px"></div><div class="sk" style="height:76px;margin-top:8px"></div><div class="sk" style="height:76px;margin-top:8px"></div></div>
+  <div id="ptr"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 4v5h-5"/></svg></div>
 </main>
 <nav class="nav"><div class="wrap" id="nav">
   <button data-tab="home" class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="2"/><rect x="14" y="3" width="7" height="5" rx="2"/><rect x="14" y="12" width="7" height="9" rx="2"/><rect x="3" y="16" width="7" height="5" rx="2"/></svg>מצב</button>
@@ -310,7 +363,7 @@ main{padding:12px 12px 110px}
     ["הכנסת", ["הכנסת","יו\"ר הכנסת","השבעת","מליאה","knesset"]],
   ];
   const STAGES = [
-    ["results","תוצאות"],["consultations","התייעצויות"],["mandate","הטלת מנדט"],["forming","הרכבה · 28+14"],["confidence","אמון בכנסת"],["government","ממשלה חדשה"]
+    ["results","תוצאות"],["consultations","התייעצויות"],["mandate","מנדט"],["forming","הרכבה","28+14 ימים"],["confidence","אמון","בכנסת"],["government","ממשלה","חדשה"]
   ];
   const CC = ["#5b8cff","#ff4458","#2fd08a","#b07cff","#ffb224","#45c3ff"];
   const PAL = ["#5b8cff","#ff4458","#2fd08a","#e37a14","#b07cff","#0f8aa8","#b8476b","#5d6b2f"];
@@ -370,6 +423,8 @@ main{padding:12px 12px 110px}
     try {
       const f = await sql(`select public.feed_v3(24, ${S.limit}) as f`);
       if (!Array.isArray(f.stories)) { const e = new Error("no stories"); e.code = "parse_error"; throw e; }
+      const prevIds = S.data ? new Set((S.data.stories || []).map((x) => x.id)) : null;
+      S.fresh = prevIds ? new Set((f.stories || []).filter((x) => !prevIds.has(x.id)).map((x) => x.id)) : new Set();
       S.data = f; S.skew = Date.parse(f.now) - Date.now(); $("stale").classList.add("hide");
       processAlerts(); render();
     } catch (e) {
@@ -547,7 +602,7 @@ Return ONLY JSON, Hebrew text, neutral and factual:
     const top = s.articles && s.articles[0]; const names = [...new Set((s.articles || []).map((a) => a.o))];
     const isNew = S.lastVisit && Date.parse(s.first_seen) > S.lastVisit; const recent = now() - Date.parse(s.first_seen) < 3 * 3600e3;
     const flag = !s.ai ? `<span class="fl q">ממתין לניתוח</span>` : s.breaking && recent ? `<span class="fl brk">מבזק</span>` : s.v30 >= 2 ? `<span class="fl hot">🔥 ${s.v30} בחצי שעה</span>` : isNew ? `<span class="fl nwq">חדש</span>` : "";
-    return `<div class="st ${big ? "big" : ""}" data-open="${s.id}">
+    return `<div class="st ${big ? "big" : ""} ${S.fresh && S.fresh.has(s.id) ? "flash" : ""}" data-open="${s.id}">
       <div class="sc ${s.ai ? ic(s.importance) : "q"}"><b>${s.ai ? s.importance : "·"}</b><i></i></div>
       <div class="sb"><div class="kk">${flag}<span>${esc(TOPICS[s.topic] || "")}</span><span>·</span><span>${ago(s.last_seen)}</span></div>
         <div class="tt" dir="auto">${esc(s.title)}</div>
@@ -564,19 +619,22 @@ Return ONLY JSON, Hebrew text, neutral and factual:
       const m = st.mandate || {};
       let mandateTile;
       if (m.holder && m.given && daysTo(m.given) > 0) {
-        mandateTile = `<div class="tile"><div class="l">המנדט להרכבת ממשלה</div><div class="v">${esc(m.holder)}</div><div class="s">הנשיא הודיע: יוטל רשמית <b>${inDays(daysTo(m.given))}</b>${m.time ? ` ב־${esc(m.time)}` : ""}</div><div class="s" style="color:var(--muted)">28 הימים יתחילו מהטקס</div><div class="prog"><i style="width:3%"></i></div></div>`;
+        mandateTile = `<div class="tile"><div class="l">המנדט להרכבת ממשלה</div><div class="v">${esc(m.holder)}</div><span class="chip2">● טקס ${inDays(daysTo(m.given))}${m.time ? ` · ${esc(m.time)}` : ""}</span><div class="s foot2" style="color:var(--muted)">28 הימים מתחילים מהטקס</div></div>`;
       } else if (m.holder && m.given) {
         const used = Math.max(0, -daysTo(m.given)); const total = m.extended ? 42 : 28; const left = total - used;
-        mandateTile = `<div class="tile"><div class="l">המנדט להרכבת ממשלה</div><div class="v">${esc(m.holder)}</div><div class="s">${left >= 0 ? `נותרו <b>${left}</b> ימים מתוך ${total}` : "המועד חלף"}${!m.extended ? " · אפשרות להארכה עד 14" : ""}</div><div class="prog ${left <= 7 ? "bad" : left <= 14 ? "warn" : ""}"><i style="width:${Math.min(100, used / total * 100)}%"></i></div></div>`;
+        mandateTile = `<div class="tile"><div class="l">המנדט · ${esc(m.holder)}</div><div class="bign"><b>${Math.max(0, left)}</b><span>ימים<br>נותרו מתוך ${total}</span></div><div class="foot2">${!m.extended ? `<div class="s" style="color:var(--muted)">אפשרות להארכה של 14 ימים</div>` : ""}<div class="prog ${left <= 7 ? "bad" : left <= 14 ? "warn" : ""}"><i style="width:${Math.min(100, used / total * 100)}%"></i></div></div></div>`;
       } else {
         const n = D.mDeadline ? daysTo(D.mDeadline) : null;
         const ann = (D.cal.find((c) => c.k === "mandate_announce") || {}).date; const na = ann ? daysTo(ann) : null;
-        const exp = m.expected ? `<div class="s">צפוי: <b>${esc(m.expected)}</b></div>` : "";
-        mandateTile = `<div class="tile"><div class="l">המנדט להרכבת ממשלה</div><div class="v">טרם הוטל</div>${na != null && na >= 0 ? `<div class="s">הנשיא יודיע <b>${inDays(na)}</b> (${dmy(ann)})</div>` : ""}${exp}<div class="s" style="color:var(--muted)">${D.mDeadline ? `מועד אחרון בחוק ${dmy(D.mDeadline)}` : "ממתין להחלטת הנשיא"}</div>${n != null && n >= 0 ? `<div class="prog warn"><i style="width:${Math.max(5, 100 - n / 7 * 100)}%"></i></div>` : ""}</div>`;
+        mandateTile = `<div class="tile"><div class="l">המנדט להרכבת ממשלה</div><div class="v">טרם הוטל</div>${m.expected ? `<span class="chip2 a">צפוי: ${esc(m.expected)}</span>` : ""}<div class="s foot2" style="color:var(--muted)">${na != null && na >= 0 ? `הנשיא יודיע ${inDays(na)}` : D.mDeadline ? `מועד אחרון ${dmy(D.mDeadline)} · ${inDays(n)}` : "ממתין להחלטת הנשיא"}</div></div>`;
       }
       const kn = D.knessetDate ? daysTo(D.knessetDate) : null;
-      const knTile = `<div class="tile"><div class="l">הכנסת ה־26</div><div class="v">${D.sworn ? "הושבעה" : "טרם הושבעה"}</div><div class="s">${D.sworn ? (st.speaker ? `יו״ר: ${esc(st.speaker)}` : `השבעה ${D.knessetDate ? dmy(D.knessetDate) : ""}`) : `השבעה ${dmy(D.knessetDate)} · <b>${inDays(kn)}</b>`}</div></div>`;
-      const steps = STAGES.map(([k, l], i) => `<div class="step ${D.idx > i ? "done" : D.idx === i ? "cur" : ""}"><div class="d"></div>${l}</div>`).join("");
+      const knTile = D.sworn
+        ? `<div class="tile"><div class="l">הכנסת ה־26</div><div class="v">הושבעה</div><div class="s foot2" style="color:var(--muted)">${st.speaker ? `יו״ר: ${esc(st.speaker)}` : D.knessetDate ? dmy(D.knessetDate) : ""}</div></div>`
+        : kn != null && kn > 0
+          ? `<div class="tile"><div class="l">הכנסת ה־26</div><div class="bign"><b>${kn}</b><span>${kn === 1 ? "יום" : "ימים"}<br>להשבעה</span></div><div class="s foot2" style="color:var(--muted)">יום ${new Date(D.knessetDate + "T12:00:00").toLocaleDateString("he-IL", { weekday: "long" }).replace("יום ", "")} · ${dmy(D.knessetDate)}</div></div>`
+          : `<div class="tile"><div class="l">הכנסת ה־26</div><div class="v">${kn === 0 ? "מושבעת היום" : "טרם הושבעה"}</div><div class="s foot2" style="color:var(--muted)">${D.knessetDate ? dmy(D.knessetDate) : ""}</div></div>`;
+      const steps = STAGES.map(([k, l, sub], i) => `<div class="step ${D.idx > i ? "done" : D.idx === i ? "cur" : ""}"><div class="d"></div>${l}${sub ? `<small>${sub}</small>` : ""}</div>`).join("");
       const T = tallyData();
       h += `<section class="status">
         <div class="kick">ראש הממשלה</div>
@@ -748,7 +806,7 @@ Return ONLY JSON, Hebrew text, neutral and factual:
   }
 
   // ---------- events ----------
-  $("nav").addEventListener("click", (e) => { const b = e.target.closest("button[data-tab]"); if (!b) return; S.tab = b.dataset.tab; [...$("nav").children].forEach((x) => x.classList.toggle("on", x === b)); S.showAll = false; render(); window.scrollTo({ top: 0 }); });
+  $("nav").addEventListener("click", (e) => { const b = e.target.closest("button[data-tab]"); if (!b) return; S.tab = b.dataset.tab; [...$("nav").children].forEach((x) => x.classList.toggle("on", x === b)); S.showAll = false; S.fresh = new Set(); render(); const v = $("view"); v.classList.remove("fade"); void v.offsetWidth; v.classList.add("fade"); window.scrollTo({ top: 0 }); try { navigator.vibrate && navigator.vibrate(6); } catch {} });
   $("view").addEventListener("click", (e) => { if (e.target.closest("a.go, a.wr, a.ev, a.pr")) return; const o = e.target.closest("[data-open]"); if (o) { e.preventDefault(); openStory(+o.dataset.open); } });
   $("chips").addEventListener("click", (e) => { const b = e.target.closest("[data-actor]"); if (!b) return; S.actor = S.actor === b.dataset.actor ? null : b.dataset.actor; render(); });
   $("bSearch").addEventListener("click", () => { S.filtersOpen = !S.filtersOpen; $("sbox").classList.toggle("hide", !S.filtersOpen); $("bSearch").classList.toggle("on", S.filtersOpen); if (S.filtersOpen) $("q").focus(); else { S.q = ""; S.actor = null; $("q").value = ""; } render(); });
@@ -766,6 +824,16 @@ Return ONLY JSON, Hebrew text, neutral and factual:
     if (e.target.id === "forceBrief") { $("sheet").classList.remove("open"); maybeBrief(true); }
   });
   $("sheet").addEventListener("change", (e) => { if (e.target.id === "thr") { S.thr = +e.target.value; store.set("thr", S.thr); } });
+  (function(){
+    const panel = $("panel"); let y0 = null, dy = 0;
+    panel.addEventListener("touchstart", (e) => { if (panel.scrollTop > 0) return; y0 = e.touches[0].clientY; dy = 0; }, { passive: true });
+    panel.addEventListener("touchmove", (e) => { if (y0 == null) return; dy = Math.max(0, e.touches[0].clientY - y0); if (dy > 0) panel.style.transform = `translateY(${dy}px)`; }, { passive: true });
+    panel.addEventListener("touchend", () => { if (y0 == null) return; panel.style.transform = ""; if (dy > 110) $("sheet").classList.remove("open"); y0 = null; });
+    const ptr = $("ptr"); let p0 = null, pd = 0, busy = false;
+    window.addEventListener("touchstart", (e) => { if (window.scrollY > 0 || $("sheet").classList.contains("open")) { p0 = null; return; } p0 = e.touches[0].clientY; pd = 0; }, { passive: true });
+    window.addEventListener("touchmove", (e) => { if (p0 == null || busy) return; pd = Math.max(0, e.touches[0].clientY - p0); const k = Math.min(1, pd / 80); ptr.style.opacity = k; ptr.style.transform = `translateY(${-40 + k * 52}px) rotate(${k * 270}deg)`; }, { passive: true });
+    window.addEventListener("touchend", async () => { if (p0 == null || busy) return; p0 = null; if (pd > 80) { busy = true; ptr.classList.add("go"); await load(true); ptr.classList.remove("go"); busy = false; } ptr.style.opacity = 0; ptr.style.transform = "translateY(-40px)"; });
+  })();
   document.addEventListener("visibilitychange", () => { if (!document.hidden) { load(); aiTick(); } else store.set("lastVisit", visitAt); });
   window.addEventListener("pagehide", () => store.set("lastVisit", visitAt));
   setInterval(() => { if (S.data) render(); }, 30000);

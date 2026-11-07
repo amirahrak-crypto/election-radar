@@ -2,8 +2,16 @@
 <html lang="he" dir="rtl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#090c12">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="חדר מצב">
 <title>חילופי שלטון · חדר מצב</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -22,7 +30,7 @@ button{font:inherit;color:inherit;cursor:pointer;background:none;border:0;paddin
 .hide{display:none!important}
 
 /* ---------- top bar ---------- */
-.bar{position:sticky;top:0;z-index:40;background:rgba(9,12,18,.86);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.bar{padding-top:env(safe-area-inset-top);position:sticky;top:0;z-index:40;background:rgba(9,12,18,.86);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
 .bar .row{display:flex;align-items:center;gap:8px;padding:10px 14px}
 .logo{display:flex;align-items:center;gap:9px}
 .logo .mk{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--red),#ff7a45);display:grid;place-items:center;font-weight:900;font-size:15px;color:#fff;box-shadow:0 0 0 1px rgba(255,255,255,.08) inset}
@@ -248,6 +256,11 @@ main{padding:12px 12px 110px}
 .ai.err i{background:var(--amber)}
 @keyframes blink{50%{opacity:.2}}
 .votes,.votes+.hint,#aiS{display:none!important}
+.install{position:fixed;left:10px;right:10px;bottom:calc(74px + env(safe-area-inset-bottom));z-index:46;max-width:740px;margin:0 auto;background:var(--p2);border:1px solid var(--line2);border-radius:16px;padding:12px 12px;display:flex;gap:11px;align-items:center;box-shadow:0 10px 30px rgba(0,0,0,.5);font-size:13.5px;line-height:1.45;color:var(--ink2)}
+.install img{width:42px;height:42px;border-radius:10px;flex:none}
+.install b{color:var(--ink)}
+.install .act{flex:none;background:var(--ink);color:var(--bg);border-radius:10px;padding:8px 12px;font-weight:800}
+.install .cl{flex:none;color:var(--muted);font-size:18px;padding:4px}
 </style>
 </head>
 <body>
@@ -276,6 +289,7 @@ main{padding:12px 12px 110px}
   <button data-tab="time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>ציר זמן</button>
 </div></nav>
 
+<div class="install hide" id="install"><img src="apple-touch-icon.png" alt=""><div style="flex:1" id="installTxt"></div><button class="act hide" id="installBtn">התקן</button><button class="cl" id="installX" aria-label="סגור">✕</button></div>
 <div class="sheet" id="sheet"><div class="panel" id="panel"></div></div>
 
 <script>
@@ -317,7 +331,7 @@ main{padding:12px 12px 110px}
   const now = () => Date.now() + S.skew;
   function ago(t){ const m = Math.max(0, Math.round((now() - Date.parse(t)) / 60000)); if (m < 1) return "עכשיו"; if (m < 60) return `לפני ${m} דק׳`; const h = Math.floor(m / 60); if (h < 24) return h === 1 ? "לפני שעה" : h === 2 ? "לפני שעתיים" : `לפני ${h} שעות`; const d = Math.floor(h / 24); return d === 1 ? "אתמול" : `לפני ${d} ימים`; }
   const hhmm = (t) => new Date(t).toLocaleTimeString("he-IL", { hour: "2-digit", minute: "2-digit", timeZone: "Asia/Jerusalem" });
-  const dmy = (d) => new Date(d + (d.length === 10 ? "T12:00:00" : "")).toLocaleDateString("he-IL", { day: "numeric", month: "numeric", timeZone: "Asia/Jerusalem" });
+  const dmy = (d) => !d ? "" : new Date(d + (d.length === 10 ? "T12:00:00" : "")).toLocaleDateString("he-IL", { day: "numeric", month: "numeric", timeZone: "Asia/Jerusalem" });
   const dayName = (t) => new Date(t).toLocaleDateString("he-IL", { weekday: "long", day: "numeric", month: "numeric", timeZone: "Asia/Jerusalem" });
   const todayISO = () => new Date(now()).toLocaleDateString("en-CA", { timeZone: "Asia/Jerusalem" });
   function daysTo(d){ const a = Date.parse(todayISO() + "T00:00:00Z"), b = Date.parse(d + "T00:00:00Z"); return Math.round((b - a) / 864e5); }
@@ -750,6 +764,20 @@ Return ONLY JSON, Hebrew text, neutral and factual:
   window.addEventListener("pagehide", () => store.set("lastVisit", visitAt));
   setInterval(() => { if (S.data) render(); }, 30000);
 
+  // ---------- install as app ----------
+  try { if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js"); } catch {}
+  (function(){
+    const standalone = window.matchMedia("(display-mode: standalone)").matches || navigator.standalone;
+    const ios = /iphone|ipad|ipod/i.test(navigator.userAgent); const mobile = /android|iphone|ipad|ipod/i.test(navigator.userAgent);
+    if (standalone || !mobile || store.get("installDismissed", 0) > Date.now() - 3 * 864e5) return;
+    let deferred = null; const box = $("install"), txt = $("installTxt"), btn = $("installBtn");
+    const show = (html, withBtn) => { txt.innerHTML = html; btn.classList.toggle("hide", !withBtn); box.classList.remove("hide"); };
+    if (ios) show(`<b>שמור כאפליקציה:</b> לחץ על <b>שתף</b> <span style="font-size:15px">⬆︎</span> למטה ואז <b>"הוסף למסך הבית"</b>`, false);
+    window.addEventListener("beforeinstallprompt", (e) => { e.preventDefault(); deferred = e; show(`<b>שמור כאפליקציה</b> על מסך הבית — נפתח במסך מלא ומתעדכן לבד`, true); });
+    btn.onclick = async () => { if (!deferred) return; deferred.prompt(); try { await deferred.userChoice; } catch {} deferred = null; box.classList.add("hide"); };
+    $("installX").onclick = () => { box.classList.add("hide"); store.set("installDismissed", Date.now()); };
+    if (!ios) setTimeout(() => { if (!deferred && box.classList.contains("hide")) show(`<b>שמור כאפליקציה:</b> בתפריט הדפדפן <b>⋮</b> בחר <b>"הוסף למסך הבית"</b>`, false); }, 4000);
+  })();
   // ---------- boot (public read-only) ----------
   S.mcp = {}; S.sample = null;
   load(true).then(() => loadLogos());

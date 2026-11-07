@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>חילופי שלטון · חדר מצב</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#090c12; --p1:#10151e; --p2:#161d29; --p3:#1d2533; --line:#232c3b; --line2:#2d3849;
+  --ink:#eef1f6; --ink2:#c3cad6; --muted:#8a94a7; --dim:#5f697c;
+  --red:#ff4458; --amber:#ffb224; --green:#2fd08a; --cyan:#45c3ff; --blue:#5b8cff; --violet:#b07cff;
+  --r:16px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Heebo,system-ui,sans-serif;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;cursor:pointer;background:none;border:0;padding:0}
+.wrap{max-width:760px;margin:0 auto}
+.hide{display:none!important}
+
+/* ---------- top bar ---------- */
+.bar{position:sticky;top:0;z-index:40;background:rgba(9,12,18,.86);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.bar .row{display:flex;align-items:center;gap:8px;padding:10px 14px}
+.logo{display:flex;align-items:center;gap:9px}
+.logo .mk{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--red),#ff7a45);display:grid;place-items:center;font-weight:900;font-size:15px;color:#fff;box-shadow:0 0 0 1px rgba(255,255,255,.08) inset}
+.logo b{font-size:16.5px;font-weight:800;letter-spacing:-.3px;display:block;line-height:1.05}
+.logo small{font-size:11px;color:var(--muted);font-weight:600;display:flex;align-items:center;gap:5px;white-space:nowrap}
+.live{width:7px;height:7px;border-radius:50%;background:var(--dim)}
+.live.on{background:var(--red);box-shadow:0 0 0 0 rgba(255,68,88,.6);animation:pulse 1.8s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 7px rgba(255,68,88,0)}100%{box-shadow:0 0 0 0 rgba(255,68,88,0)}}
+.sp{flex:1}
+.ib{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;background:var(--p2);border:1px solid var(--line);color:var(--ink2)}
+.ib.on{background:var(--ink);color:var(--bg)}
+.ib.spin svg{animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.sbox{padding:0 14px 10px}
+.sbox input{width:100%;font:inherit;font-size:15px;padding:10px 13px;border-radius:12px;border:1px solid var(--line2);background:var(--p2);color:var(--ink);outline:none}
+.chips{display:flex;gap:6px;overflow-x:auto;padding:0 14px 10px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{background:var(--p2);border:1px solid var(--line);border-radius:999px;padding:5px 11px;font-size:12.5px;white-space:nowrap;font-weight:600;color:var(--ink2)}
+.chip.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+
+main{padding:12px 12px 110px}
+.h{font-size:12px;font-weight:800;color:var(--muted);letter-spacing:.4px;margin:22px 4px 10px;display:flex;align-items:center;gap:8px}
+.h .c{color:var(--dim);font-weight:600}
+.h a{margin-inline-start:auto;color:var(--cyan);font-weight:700}
+
+/* ---------- status (hero) ---------- */
+.status{position:relative;background:radial-gradient(120% 80% at 100% 0%,rgba(91,140,255,.16),transparent 60%),radial-gradient(90% 70% at 0% 100%,rgba(255,68,88,.10),transparent 60%),var(--p1);border:1px solid var(--line2);border-radius:22px;padding:16px 15px 14px;overflow:hidden}
+.kick{font-size:11.5px;font-weight:800;color:var(--muted);letter-spacing:.5px}
+.pm{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;margin-top:3px}
+.pm b{font-size:24px;font-weight:900;letter-spacing:-.6px}
+.badge{font-size:11.5px;font-weight:800;border-radius:7px;padding:2px 8px;background:rgba(255,178,36,.14);color:var(--amber);border:1px solid rgba(255,178,36,.3)}
+.badge.g{background:rgba(47,208,138,.12);color:var(--green);border-color:rgba(47,208,138,.3)}
+.badge.r{background:rgba(255,68,88,.14);color:var(--red);border-color:rgba(255,68,88,.35)}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+.tile{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;padding:10px 11px}
+.tile .l{font-size:11.5px;color:var(--muted);font-weight:700}
+.tile .v{font-size:16px;font-weight:800;margin-top:2px;line-height:1.25}
+.tile .s{font-size:12px;color:var(--ink2);margin-top:3px}
+.prog{height:5px;border-radius:3px;background:var(--p3);margin-top:8px;overflow:hidden;position:relative}
+.prog i{position:absolute;inset:0 0 0 auto;background:var(--cyan);border-radius:3px}
+.prog.warn i{background:var(--amber)} .prog.bad i{background:var(--red)}
+.steps{display:flex;gap:0;margin-top:16px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.steps::-webkit-scrollbar{display:none}
+.step{flex:1;min-width:66px;text-align:center;position:relative;font-size:10.5px;font-weight:700;color:var(--dim);line-height:1.25}
+.step .d{width:14px;height:14px;border-radius:50%;margin:0 auto 6px;background:var(--p3);border:2px solid var(--line2);position:relative;z-index:1}
+.step::before{content:"";position:absolute;top:6px;right:50%;width:100%;height:2px;background:var(--line2)}
+.step:first-child::before{display:none}
+.step.done{color:var(--ink2)} .step.done .d{background:var(--green);border-color:var(--green)}
+.step.done::before{background:var(--green)}
+.step.cur{color:var(--ink)} .step.cur .d{background:var(--bg);border-color:var(--cyan);box-shadow:0 0 0 4px rgba(69,195,255,.18)}
+.step.cur::before{background:linear-gradient(to left,var(--green),var(--cyan))}
+.foot{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px;padding-top:10px;border-top:1px solid var(--line);font-size:11.5px;color:var(--muted);font-weight:600}
+.alt{margin-top:12px;font-size:12.5px;color:var(--ink2);background:rgba(255,68,88,.08);border:1px solid rgba(255,68,88,.25);border-radius:12px;padding:8px 10px}
+.tally{margin-top:14px}
+.tbar{position:relative;height:12px;border-radius:6px;overflow:hidden;display:flex;background:var(--p3)}
+.tbar > div{height:100%}
+.tbar .m{position:absolute;top:0;bottom:0;width:2px;background:#fff;right:calc(61/120*100%);box-shadow:0 0 0 2px rgba(0,0,0,.35)}
+.tleg{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:7px;font-size:12px;color:var(--ink2)}
+.tleg span{display:inline-flex;align-items:center;gap:5px}
+.tleg i{width:8px;height:8px;border-radius:2px;display:inline-block}
+.tleg b{color:var(--ink)}
+
+/* ---------- briefing ---------- */
+.brief{margin-top:12px;background:var(--p1);border:1px solid var(--line);border-radius:var(--r);padding:13px 14px}
+.brief .t{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:800}
+.brief .t small{margin-inline-start:auto;color:var(--muted);font-weight:600;font-size:11.5px}
+.brief ol{margin:9px 0 0;padding:0;list-style:none;counter-reset:b}
+.brief li{counter-increment:b;display:flex;gap:9px;font-size:14.5px;line-height:1.5;color:var(--ink2);padding:5px 0;border-top:1px solid var(--line)}
+.brief li:first-child{border-top:0}
+.brief li::before{content:counter(b);flex:none;width:20px;height:20px;border-radius:6px;background:var(--p3);color:var(--ink);font-size:11.5px;font-weight:800;display:grid;place-items:center;margin-top:2px}
+.brief.wait{color:var(--muted);font-size:13.5px;line-height:1.55}
+
+/* ---------- now strip ---------- */
+.now{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -12px;padding:0 12px}
+.now::-webkit-scrollbar{display:none}
+.nw{flex:none;width:78%;max-width:330px;background:linear-gradient(160deg,rgba(255,68,88,.16),rgba(255,68,88,.03) 60%),var(--p1);border:1px solid rgba(255,68,88,.32);border-radius:var(--r);padding:11px 12px;display:flex;flex-direction:column;gap:6px;cursor:pointer}
+.nw .k{font-size:11px;font-weight:800;color:var(--red);display:flex;gap:6px;align-items:center}
+.nw .tt{font-size:15px;font-weight:700;line-height:1.38}
+.nw .ft{margin-top:auto;display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--muted)}
+
+/* ---------- story rows ---------- */
+.list{background:var(--p1);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.st{display:flex;gap:11px;padding:12px 12px 12px 8px;border-top:1px solid var(--line);cursor:pointer;position:relative}
+.st:first-child{border-top:0}
+.st:active{background:var(--p2)}
+.sc{flex:none;width:34px;display:flex;flex-direction:column;align-items:center;gap:4px;padding-top:2px}
+.sc b{font-size:19px;font-weight:900;line-height:1}
+.sc i{width:4px;flex:1;min-height:18px;border-radius:2px;background:var(--dim);opacity:.9}
+.sc.i9 b{color:var(--red)} .sc.i9 i{background:var(--red)}
+.sc.i7 b{color:var(--amber)} .sc.i7 i{background:var(--amber)}
+.sc.i5 b{color:var(--cyan)} .sc.i5 i{background:var(--cyan)}
+.sc.q b{color:var(--dim)}
+.sb{flex:1;min-width:0}
+.kk{font-size:11.5px;color:var(--muted);font-weight:600;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.kk .fl{font-weight:800;border-radius:5px;padding:0 5px;line-height:17px}
+.fl.brk{background:var(--red);color:#fff} .fl.hot{background:rgba(255,178,36,.16);color:var(--amber)} .fl.nwq{background:rgba(69,195,255,.15);color:var(--cyan)} .fl.q{background:var(--p3);color:var(--muted)}
+.tt{font-size:15.5px;font-weight:700;line-height:1.4;margin-top:3px}
+.st.big .tt{font-size:18.5px;font-weight:800;line-height:1.32}
+.sm{font-size:13.5px;color:var(--muted);line-height:1.45;margin-top:3px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.src{display:flex;align-items:center;gap:6px;margin-top:7px;font-size:12px;color:var(--ink2);font-weight:600}
+.lg{width:18px;height:18px;border-radius:5px;flex:none;object-fit:contain;background:#fff;display:inline-grid;place-items:center;font-size:10px;font-weight:800;color:#fff;vertical-align:middle}
+.stack{display:inline-flex}
+.stack .lg{margin-inline-start:-5px;box-shadow:0 0 0 2px var(--p1)}
+.stack .lg:first-child{margin-inline-start:0}
+.go{flex:none;align-self:center;width:32px;height:32px;border-radius:10px;display:grid;place-items:center;color:var(--muted);background:var(--p2);border:1px solid var(--line)}
+.more{display:block;text-align:center;padding:11px;font-size:13px;font-weight:700;color:var(--cyan);border-top:1px solid var(--line)}
+
+/* ---------- wire ---------- */
+.wr{display:flex;gap:10px;padding:10px 12px;border-top:1px solid var(--line);align-items:flex-start}
+.wr:first-child{border-top:0}
+.wr .tm{flex:none;width:40px;font-size:12px;font-weight:800;color:var(--muted);direction:ltr;text-align:right;padding-top:2px}
+.wr .x{flex:1;min-width:0}
+.wr .o{display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;color:var(--muted)}
+.wr .t{display:block;font-size:14.5px;line-height:1.42;margin-top:3px;color:var(--ink)}
+.wr .im{flex:none;font-size:11px;font-weight:900;border-radius:6px;padding:1px 6px;background:var(--p3);color:var(--ink2);margin-top:2px}
+.wr .im.i9{background:var(--red);color:#fff} .wr .im.i7{background:var(--amber);color:#111} .wr .im.i5{background:rgba(69,195,255,.2);color:var(--cyan)}
+.hr{font-size:11.5px;font-weight:800;color:var(--muted);padding:7px 12px;background:var(--p2);border-top:1px solid var(--line)}
+.hr:first-child{border-top:0}
+
+/* ---------- map ---------- */
+.card{background:var(--p1);border:1px solid var(--line);border-radius:var(--r);padding:14px}
+.card h3{margin:0;font-size:15.5px;font-weight:800}
+.card .sub{font-size:12.5px;color:var(--muted);line-height:1.5;margin-top:3px}
+.big .tbar{height:26px;border-radius:9px}
+.big .tbar > div{display:grid;place-items:center;color:#fff;font-size:12px;font-weight:800;overflow:hidden}
+.pr{display:grid;grid-template-columns:32px 1fr auto;gap:4px 10px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
+.pr:first-of-type{border-top:0}
+.pr .n{font-size:16px;font-weight:900;text-align:center}
+.pr .p{font-weight:700;font-size:14.5px}
+.pr .tags{grid-column:2 / 4;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.pill{font-size:11.5px;font-weight:800;border-radius:999px;padding:2px 9px;white-space:nowrap}
+.pill.u{background:var(--p3);color:var(--muted)}
+.pr .ev{font-size:11.5px;color:var(--cyan);font-weight:700}
+.seatsbar{width:100%;height:4px;border-radius:2px;background:var(--p3);grid-column:1 / 4;overflow:hidden}
+.seatsbar i{display:block;height:100%;background:var(--line2)}
+.proc{counter-reset:s;margin:0;padding:0;list-style:none}
+.proc li{counter-increment:s;display:flex;gap:10px;padding:8px 0;border-top:1px solid var(--line);font-size:13.5px;line-height:1.5;color:var(--ink2)}
+.proc li:first-child{border-top:0}
+.proc li::before{content:counter(s);flex:none;width:22px;height:22px;border-radius:7px;background:var(--p3);display:grid;place-items:center;font-weight:800;font-size:12px;color:var(--ink)}
+.proc b{color:var(--ink)}
+
+/* ---------- timeline ---------- */
+.tl{position:relative;padding-right:18px}
+.tl::before{content:"";position:absolute;right:5px;top:6px;bottom:6px;width:2px;background:var(--line2)}
+.ev2{position:relative;padding:6px 0 12px}
+.ev2::before{content:"";position:absolute;right:-17px;top:11px;width:10px;height:10px;border-radius:50%;background:var(--p3);border:2px solid var(--line2)}
+.ev2.done::before{background:var(--green);border-color:var(--green)}
+.ev2.next::before{background:var(--bg);border-color:var(--cyan);box-shadow:0 0 0 4px rgba(69,195,255,.18)}
+.ev2 .dt{font-size:11.5px;font-weight:800;color:var(--muted)}
+.ev2 .lb{font-size:14.5px;font-weight:700;margin-top:1px}
+.ev2 .cd{font-size:12px;color:var(--cyan);font-weight:700}
+.ev2 a{font-size:12px;color:var(--cyan);font-weight:700}
+
+/* ---------- bottom nav ---------- */
+.nav{position:fixed;bottom:0;left:0;right:0;z-index:45;background:rgba(9,12,18,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+.nav .wrap{display:flex}
+.nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 2px 10px;font-size:11px;font-weight:700;color:var(--dim);position:relative}
+.nav button svg{width:22px;height:22px}
+.nav button.on{color:var(--ink)}
+.nav button.on::after{content:"";position:absolute;top:0;width:28px;height:2.5px;border-radius:2px;background:var(--cyan)}
+.nav .n{position:absolute;top:5px;left:calc(50% - 22px);min-width:17px;height:17px;border-radius:9px;background:var(--red);color:#fff;font-size:10px;line-height:17px;padding:0 4px}
+
+/* ---------- toast alerts ---------- */
+#toasts{position:fixed;top:60px;left:0;right:0;z-index:60;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none;padding:0 12px}
+.toast{pointer-events:auto;width:100%;max-width:520px;display:flex;gap:10px;align-items:flex-start;background:var(--red);color:#fff;border-radius:16px;padding:11px 12px;box-shadow:0 10px 30px rgba(0,0,0,.45);animation:drop .35s ease}
+.toast.o{background:#c97800}
+@keyframes drop{from{transform:translateY(-10px);opacity:0}to{transform:none;opacity:1}}
+.toast .k{font-size:11px;font-weight:800;opacity:.9}
+.toast .t{font-weight:800;font-size:14px;line-height:1.35;margin-top:1px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.toast .x{margin-inline-start:auto;background:rgba(255,255,255,.2);border-radius:9px;width:28px;height:28px;flex:none;color:#fff}
+
+/* ---------- sheet ---------- */
+.sheet{position:fixed;inset:0;z-index:70;background:rgba(0,0,0,.55);display:none;align-items:flex-end;justify-content:center}
+.sheet.open{display:flex}
+.panel{background:var(--p1);border:1px solid var(--line2);border-bottom:0;width:100%;max-width:760px;max-height:90vh;overflow:auto;border-radius:22px 22px 0 0;padding:8px 16px 34px;animation:up .25s ease}
+@keyframes up{from{transform:translateY(30px);opacity:.4}to{transform:none;opacity:1}}
+.grab{width:40px;height:4px;border-radius:2px;background:var(--line2);margin:4px auto 12px}
+.dh .kk{margin-bottom:4px}
+.dh h2{margin:0;font-size:21px;line-height:1.3;font-weight:800}
+.dh p{margin:8px 0 0;font-size:15px;line-height:1.55;color:var(--ink2)}
+.why{margin-top:12px;background:rgba(69,195,255,.08);border:1px solid rgba(69,195,255,.22);border-radius:12px;padding:9px 11px;font-size:13.5px;line-height:1.5;color:var(--ink2)}
+.why b{color:var(--cyan)}
+.primary{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:14px;background:var(--ink);color:var(--bg);border-radius:13px;padding:12px;font-weight:800;font-size:15px}
+.arts{margin-top:16px}
+.ar{display:flex;gap:9px;align-items:flex-start;padding:9px 0;border-top:1px solid var(--line);font-size:14px;line-height:1.42}
+.ar .o{flex:none;display:flex;align-items:center;gap:6px;font-weight:800;font-size:12px;width:96px}
+.ar .t{flex:1;color:var(--ink2)}
+.ar .tm{flex:none;font-size:11.5px;color:var(--muted);direction:ltr}
+.calc{margin-top:14px;background:var(--p2);border-radius:12px;padding:10px 12px;font-size:13px}
+.calc .r{display:flex;justify-content:space-between;padding:2px 0;color:var(--ink2)}
+.calc .r b{color:var(--ink)}
+.calc .tot{border-top:1px solid var(--line2);margin-top:5px;padding-top:6px;font-weight:800}
+.votes{display:flex;gap:8px;margin-top:12px}
+.votes button{flex:1;border:1px solid var(--line2);background:var(--p2);border-radius:12px;padding:10px 4px;font-size:13.5px;font-weight:800;color:var(--ink2)}
+.votes button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.hint{font-size:12px;color:var(--muted);margin-top:7px;line-height:1.5}
+.seg{display:flex;background:var(--p2);border-radius:12px;padding:3px;gap:3px;margin-bottom:6px}
+.seg button{flex:1;padding:8px 4px;border-radius:9px;font-weight:800;font-size:13px;color:var(--muted)}
+.seg button.on{background:var(--p3);color:var(--ink)}
+.doc{font-size:14px;line-height:1.65;color:var(--ink2)}
+.doc h4{margin:16px 0 4px;font-size:14.5px;color:var(--ink)}
+.doc p{margin:4px 0}
+.doc b{color:var(--ink)}
+.row{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--line);gap:12px;font-size:14.5px}
+.row select{font:inherit;padding:6px 8px;border-radius:9px;border:1px solid var(--line2);background:var(--p2);color:var(--ink)}
+.tg{width:46px;height:28px;border-radius:14px;background:var(--p3);position:relative;flex:none}
+.tg::after{content:"";position:absolute;top:3px;right:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:.2s}
+.tg.on{background:var(--green)}
+.tg.on::after{right:21px}
+.srow{display:flex;align-items:center;gap:9px;padding:9px 0;border-top:1px solid var(--line);font-size:13.5px}
+.srow .dt{width:8px;height:8px;border-radius:50%;background:var(--green);flex:none}
+.srow .dt.bad{background:var(--amber)} .srow .dt.off{background:var(--dim)}
+.srow .nm{flex:1;min-width:0}
+.srow .nm small{display:block;color:var(--muted);font-size:11.5px}
+.srow .c{font-weight:900;color:var(--ink2)}
+.empty,.notice{text-align:center;color:var(--muted);padding:30px 16px;line-height:1.6}
+.notice{background:var(--p1);border:1px solid var(--line);border-radius:var(--r)}
+.notice button{margin-top:10px;background:var(--ink);color:var(--bg);border-radius:11px;padding:9px 16px;font-weight:800}
+.stale{font-size:12px;color:var(--amber);text-align:center;margin:0 0 8px}
+.ai{display:inline-flex;align-items:center;gap:5px}
+.ai i{width:6px;height:6px;border-radius:50%;background:var(--green)}
+.ai.busy i{background:var(--cyan);animation:blink 1s infinite}
+.ai.err i{background:var(--amber)}
+@keyframes blink{50%{opacity:.2}}
+.votes,.votes+.hint,#aiS{display:none!important}
+</style>
+</head>
+<body>
+<div class="bar">
+  <div class="wrap">
+    <div class="row">
+      <div class="logo"><div class="mk">ח</div><div><b>חילופי שלטון</b><small><span class="live" id="live"></span><span id="clock">חדר מצב</span></small></div></div>
+      <div class="sp"></div>
+      <button class="ib" id="bSearch" aria-label="חיפוש"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></svg></button>
+      <button class="ib" id="bRefresh" aria-label="סריקה עכשיו"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 4v5h-5"/></svg></button>
+      <button class="ib" id="bMenu" aria-label="הגדרות ושיטה"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    </div>
+    <div class="sbox hide" id="sbox"><input id="q" type="search" placeholder="חיפוש: שם, מפלגה, נושא…" autocomplete="off"></div>
+    <div class="chips hide" id="chips"></div>
+  </div>
+</div>
+<div id="toasts"></div>
+<main class="wrap">
+  <div id="stale" class="stale hide"></div>
+  <div id="view"><div class="empty">טוען את חדר המצב…</div></div>
+</main>
+<nav class="nav"><div class="wrap" id="nav">
+  <button data-tab="home" class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="2"/><rect x="14" y="3" width="7" height="5" rx="2"/><rect x="14" y="12" width="7" height="9" rx="2"/><rect x="3" y="16" width="7" height="5" rx="2"/></svg>מצב</button>
+  <button data-tab="live"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h11M4 18h7"/><circle cx="19" cy="17" r="3"/></svg>חי<span class="n hide" id="liveN"></span></button>
+  <button data-tab="map"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 21h18M5 21V10M10 21V10M14 21V10M19 21V10M2 10l10-6 10 6"/></svg>מפה פוליטית</button>
+  <button data-tab="time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>ציר זמן</button>
+</div></nav>
+
+<div class="sheet" id="sheet"><div class="panel" id="panel"></div></div>
+
+<script>
+(() => {
+  const PROJECT = "mczwffsjfepeahvcmpvr", SERVER = "Supabase";
+  const TOPICS = { results:"תוצאות", president:"הנשיא והמנדט", coalition:"קואליציה", parties:"מפלגות", legal:"משפטי", government:"ממשלת המעבר", world:"בעולם", analysis:"פרשנות", knesset:"הכנסת" };
+  const ACTORS = [
+    ["הנשיא", ["הרצוג","הנשיא","בית הנשיא","herzog","president"]],
+    ["נתניהו", ["ליכוד","נתניהו","likud","netanyahu"]],
+    ["איזנקוט", ["ישר!","איזנקוט","eisenkot","yashar"]],
+    ["בנט", ["ביחד","בנט","bennett"]],
+    ["ליברמן", ["ישראל ביתנו","ליברמן","liberman","lieberman"]],
+    ["גולן", ["הדמוקרטים","יאיר גולן","golan"]],
+    ["החרדים", ["ש\"ס","ש״ס","דרעי","יהדות התורה","דגל התורה","אגודת","גפני","גולדקנופף","חרדי","shas","deri","utj","haredi"]],
+    ["בן גביר", ["עוצמה","בן גביר","בן-גביר","ben gvir","ben-gvir"]],
+    ["סמוטריץ'", ["הציונות הדתית","סמוטריץ","smotrich"]],
+    ["המפלגות הערביות", ["רע\"מ","רע״מ","עבאס","המשותפת","עודה","טיבי","ra'am","abbas","odeh"]],
+    ["הכנסת", ["הכנסת","יו\"ר הכנסת","השבעת","מליאה","knesset"]],
+  ];
+  const STAGES = [
+    ["results","תוצאות"],["consultations","התייעצויות"],["mandate","הטלת מנדט"],["forming","הרכבה · 28+14"],["confidence","אמון בכנסת"],["government","ממשלה חדשה"]
+  ];
+  const CC = ["#5b8cff","#ff4458","#2fd08a","#b07cff","#ffb224","#45c3ff"];
+  const PAL = ["#5b8cff","#ff4458","#2fd08a","#e37a14","#b07cff","#0f8aa8","#b8476b","#5d6b2f"];
+
+  const $ = (id) => document.getElementById(id);
+  const store = { get(k, d){ try { const v = localStorage.getItem("radar:"+k); return v == null ? d : JSON.parse(v); } catch { return d; } }, set(k, v){ try { localStorage.setItem("radar:"+k, JSON.stringify(v)); } catch {} } };
+  const S = {
+    tab: "home", actor: null, q: "", data: null, skew: 0, limit: 50, loading: false,
+    thr: store.get("thr", 8), vel: store.get("vel", true), snd: store.get("snd", false), aiOn: store.get("aiOn", true),
+    alerted: store.get("alerted", {}), lastVisit: store.get("lastVisit", null), toasts: [], unread: 0,
+    mcp: null, sample: null, logos: store.get("logos", {}), showAll: false,
+    ai: { state: "off", busy: false, backoff: 0, pending: null },
+  };
+  const visitAt = Date.now();
+
+  // ---------- helpers ----------
+  const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+  const now = () => Date.now() + S.skew;
+  function ago(t){ const m = Math.max(0, Math.round((now() - Date.parse(t)) / 60000)); if (m < 1) return "עכשיו"; if (m < 60) return `לפני ${m} דק׳`; const h = Math.floor(m / 60); if (h < 24) return h === 1 ? "לפני שעה" : h === 2 ? "לפני שעתיים" : `לפני ${h} שעות`; const d = Math.floor(h / 24); return d === 1 ? "אתמול" : `לפני ${d} ימים`; }
+  const hhmm = (t) => new Date(t).toLocaleTimeString("he-IL", { hour: "2-digit", minute: "2-digit", timeZone: "Asia/Jerusalem" });
+  const dmy = (d) => new Date(d + (d.length === 10 ? "T12:00:00" : "")).toLocaleDateString("he-IL", { day: "numeric", month: "numeric", timeZone: "Asia/Jerusalem" });
+  const dayName = (t) => new Date(t).toLocaleDateString("he-IL", { weekday: "long", day: "numeric", month: "numeric", timeZone: "Asia/Jerusalem" });
+  const todayISO = () => new Date(now()).toLocaleDateString("en-CA", { timeZone: "Asia/Jerusalem" });
+  function daysTo(d){ const a = Date.parse(todayISO() + "T00:00:00Z"), b = Date.parse(d + "T00:00:00Z"); return Math.round((b - a) / 864e5); }
+  const inDays = (n) => n === 0 ? "היום" : n === 1 ? "מחר" : n > 1 ? `בעוד ${n} ימים` : n === -1 ? "אתמול" : `לפני ${-n} ימים`;
+  const addDays = (d, n) => { const x = new Date(d + "T12:00:00Z"); x.setUTCDate(x.getUTCDate() + n); return x.toISOString().slice(0, 10); };
+  const ic = (i) => i >= 9 ? "i9" : i >= 7 ? "i7" : i >= 5 ? "i5" : "";
+  function logo(name){ const src = S.logos && S.logos[name]; if (src) return `<img class="lg" alt="" src="${esc(src)}">`; let h = 0; for (const ch of String(name)) h = (h * 31 + ch.charCodeAt(0)) >>> 0; return `<span class="lg" style="background:${PAL[h % PAL.length]}">${esc(String(name).trim().charAt(0).toUpperCase())}</span>`; }
+  const txt = (s) => (s.title + " " + (s.summary || "") + " " + (s.articles || []).map((x) => x.t).join(" ")).toLowerCase();
+  const actorMatch = (t, name) => { const a = ACTORS.find((x) => x[0] === name); return a && a[1].some((k) => t.includes(k.toLowerCase())); };
+  const IC = { ext: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M7 17 17 7M9 7h8v8"/></svg>` };
+
+  function parsePayload(res){
+    const texts = []; const push = (v) => { if (v == null) return; if (typeof v === "string") texts.push(v); else if (typeof v === "object") texts.push(typeof v.result === "string" ? v.result : JSON.stringify(v)); };
+    if (res) { push(res.payload); push(res.structuredContent); (res.content || []).forEach((b) => b && b.type === "text" && push(b.text)); }
+    let last = null;
+    for (let t of texts) {
+      try { const j = JSON.parse(t); if (j && typeof j.result === "string") t = j.result; } catch {}
+      const m = t.match(/<untrusted-data-([\w-]+)>[ \t]*\r?\n([\s\S]*?)\r?\n[ \t]*<\/untrusted-data-\1>/);
+      try { const rows = JSON.parse(m ? m[2] : t); let f = Array.isArray(rows) ? rows[0] && rows[0].f : (rows && rows.f) || rows; if (typeof f === "string") f = JSON.parse(f); if (f && typeof f === "object") return f; last = new Error("shape"); } catch (e) { last = e; }
+    }
+    const err = new Error("parse: " + (last ? last.message : "no text")); err.code = "parse_error"; throw err;
+  }
+  const API = "https://mczwffsjfepeahvcmpvr.supabase.co/rest/v1/rpc/", ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jendmZnNqZmVwZWFodmNtcHZyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM4MTQzMzksImV4cCI6MjEwOTM5MDMzOX0.HJ9DImhDIvyo0ZgW9Py8GWa2QDQX-B7nBbZ5bIaP5lA";
+  async function rpc(fn, body){ const r = await fetch(API + fn, { method: "POST", headers: { apikey: ANON, Authorization: "Bearer " + ANON, "Content-Type": "application/json" }, body: JSON.stringify(body || {}) }); if (!r.ok) { const e = new Error("HTTP " + r.status); e.code = "http_" + r.status; e.retryable = r.status >= 500; throw e; } return r.json(); }
+  async function sql(query){
+    if (/feed_v3/.test(query)) { const m = query.match(/feed_v3\(\d+,\s*(\d+)\)/); return rpc("feed_public", { lim: m ? +m[1] : 50 }); }
+    if (/logos_json/.test(query)) return rpc("logos_public");
+    if (/sources_json/.test(query)) return rpc("sources_public");
+    throw Object.assign(new Error("read-only"), { code: "read_only" });
+  }
+  function jsonLit(o){ const s = JSON.stringify(o); let t; do { t = "j" + Math.random().toString(36).slice(2, 8); } while (s.includes("$" + t + "$")); return `$${t}$${s}$${t}$::jsonb`; }
+
+  // ---------- data ----------
+  async function load(manual){
+    if (!S.mcp || S.loading) return; S.loading = true;
+    try {
+      const f = await sql(`select public.feed_v3(24, ${S.limit}) as f`);
+      if (!Array.isArray(f.stories)) { const e = new Error("no stories"); e.code = "parse_error"; throw e; }
+      S.data = f; S.skew = Date.parse(f.now) - Date.now(); $("stale").classList.add("hide");
+      processAlerts(); render();
+    } catch (e) {
+      console.error("load", e);
+      if (e && e.code === "parse_error" && S.limit > 20) { S.limit = Math.floor(S.limit / 2); S.loading = false; return load(manual); }
+      onError(e, manual);
+    } finally { S.loading = false; }
+  }
+  function onError(e, manual){
+    const code = e && e.code, v = $("view");
+    if (code === "approval_required" || code === "not_in_manifest" || code === "consent_required") { v.innerHTML = `<div class="notice">הדף צריך אישור לקרוא את הנתונים מ־Supabase דרך החיבור שלך.<br><button id="grant">אשר גישה</button></div>`; $("grant").onclick = () => load(true); return; }
+    if (code === "server_not_connected" || code === "needs_reauth" || code === "selection_required") { v.innerHTML = `<div class="notice">החיבור ל־Supabase לא זמין${code === "needs_reauth" ? " (צריך להתחבר מחדש)" : ""}.<br>חבר את Supabase ב־claude.ai ← הגדרות ← Connectors, ואז רענן.</div>`; return; }
+    if (S.data) { const s = $("stale"); s.classList.remove("hide"); s.textContent = "אין חיבור כרגע — מוצגים הנתונים האחרונים."; }
+    else { v.innerHTML = `<div class="notice">לא הצלחתי לטעון את הנתונים.<br><small style="direction:ltr;display:block;font-size:11px;opacity:.7;word-break:break-all">${esc(code || "no-code")}: ${esc(String(e && e.message || e).slice(0, 200))}</small><button id="retry">נסה שוב</button></div>`; $("retry").onclick = () => load(true); }
+    if (e && e.retryable && !manual) setTimeout(() => load(), 4000 + Math.random() * 3000);
+  }
+  async function loadLogos(){ if (Date.now() - store.get("logosAt", 0) < 30 * 60000 && Object.keys(S.logos).length > 25) return; try { const f = await sql("select public.logos_json() as f"); if (f && typeof f === "object") { S.logos = f; store.set("logos", f); store.set("logosAt", Date.now()); render(); } } catch {} }
+  async function collectNow(){ const b = $("bRefresh"); b.classList.add("spin"); await load(true); setTimeout(() => b.classList.remove("spin"), 600); return; if (!S.mcp || b.classList.contains("spin")) return; b.classList.add("spin"); try { await sql("select public.invoke_collect('run') as f"); } catch {} setTimeout(() => load(true), 25000); setTimeout(() => { load(true).then(() => aiTick(true)); b.classList.remove("spin"); }, 55000); }
+
+  // ---------- Claude ----------
+  const RUBRIC = `Importance — judge by real political consequence, never by which side it helps:
+10 decisive/historic: government sworn in or formed, mandate officially assigned, new elections triggered, PM resigns/ends term.
+8-9 major: official recommendation to the President, coalition agreement signed or collapsed, party switching blocs/merging/splitting, Knesset sworn in / Speaker elected, decisive announcement by a major leader, mandate extension or return.
+6-7 significant: substantive negotiation meetings, ultimatums, important court/AG decisions with political weight, consequential caretaker-government decisions, credible leaks of deals, major international reactions.
+4-5 routine political news: statements, interviews, minor developments.
+1-3 opinion/analysis without new facts, gossip, minor items.`;
+  function classifyPrompt(q){
+    const calib = (q.feedback || []).length ? `\nCALIBRATION — the user follows Israeli politics closely and corrected earlier scores. Learn the pattern and apply it:\n${q.feedback.map((f) => `${f.vote > 0 ? "MORE important than" : "LESS important than"} the ${f.ai_importance} you gave: ${f.title}`).join("\n")}\n` : "";
+    return `You are the night editor of a live desk tracking Israeli politics during the hand-over of the Knesset and the government. Today is ${todayISO()}. Context: ${q.context}
+For each NEW article decide:
+(a) rel: is it about Israeli politics in this period? (government formation and coalition talks, the mandate and the President, the Knesset swearing-in/Speaker/committees, Netanyahu's term and the caretaker government's politically weighty decisions, parties and leaders, AG/courts in a political context, notable international reactions to Israeli politics). Pure military/security events, crime, sports, economy, foreign politics with no Israeli-political angle => false.
+(b) story: an existing story id if it reports the SAME specific development; otherwise a new key "n1","n2"... Stories are specific developments, never broad themes. Hebrew and English articles about the same development share a story.
+For each NEW story: title (Hebrew, <=90 chars, factual neutral headline), summary (Hebrew, one sentence <=170 chars, only facts in the articles), why (Hebrew, <=90 chars: the concrete political consequence behind the score), topic (results|president|coalition|knesset|government|parties|legal|world|analysis), importance 1-10, breaking (true only for a fresh hard-news development).
+${RUBRIC}
+You may UPDATE an existing story when new articles add significant information (id plus any of title, summary, why, importance).${calib}
+EXISTING STORIES:
+${(q.stories || []).map((s) => `#${s.id} [${s.importance}] ${s.title}`).join("\n") || "(none)"}
+
+NEW ARTICLES:
+${q.articles.map((a, i) => `[${i}] (${a.o}, ${a.l}, ${hhmm(a.p)}) ${a.title}${a.d ? " — " + a.d : ""}`).join("\n")}
+
+Return ONLY JSON: {"articles":[{"i":0,"rel":true,"story":123}],"new":[{"key":"n1","title":"","summary":"","why":"","topic":"","importance":5,"breaking":false}],"updates":[{"id":123,"importance":7}]}
+Every article index exactly once; omit "story" when rel is false.`;
+  }
+  async function askJSON(p){
+    if (typeof S.sample.json === "function") { try { const v = await S.sample.json(p, { modelTier: "default" }); if (v && typeof v === "object") return v; } catch (e) { if (e && (e.code === "not_granted" || e.code === "rate_limited")) throw e; } }
+    const r = await S.sample(p, { modelTier: "default" }); const t = (r && r.text) || ""; return JSON.parse(t.slice(t.indexOf("{"), t.lastIndexOf("}") + 1));
+  }
+  function setAI(st){ S.ai.state = st; renderAI(); }
+  async function aiTick(force){
+    if (!S.sample || !S.mcp || !S.aiOn || S.ai.busy) return;
+    if (!force && Date.now() < S.ai.backoff) return;
+    S.ai.busy = true;
+    try {
+      await maybeBrief();
+      for (let round = 0; round < 3; round++) {
+        const q = await sql("select public.ai_queue(30) as f"); S.ai.pending = q.pending;
+        if (!q.articles || !q.articles.length) break;
+        setAI("busy");
+        const res = await askJSON(classifyPrompt(q)); const assign = [];
+        for (const a of (res && res.articles) || []) { const art = q.articles[+a.i]; if (!art) continue; const st = a.story;
+          assign.push({ id: art.id, rel: !!a.rel, key: typeof st === "string" && !/^\d+$/.test(st) ? st : undefined, story: st != null && /^\d+$/.test(String(st)) ? String(st) : undefined }); }
+        if (!assign.length) throw Object.assign(new Error("empty"), { code: "ai_empty" });
+        const r = await sql(`select public.apply_ai(${jsonLit({ new: res.new || [], updates: res.updates || [], assign })}) as f`);
+        S.ai.pending = r.pending; await load(); if (!r.pending) break;
+      }
+      setAI("ok"); await maybeBrief();
+    } catch (e) {
+      console.warn("ai", e); const code = e && e.code;
+      if (code === "not_granted") { S.sample = null; setAI("off"); } else { S.ai.backoff = Date.now() + (code === "rate_limited" ? 5 * 60000 : 90000); setAI("err"); }
+    } finally { S.ai.busy = false; }
+  }
+  function briefStale(){ const b = (S.data && S.data.briefing) || {}; return !b.at || !b.state || Date.now() - Date.parse(b.at) > 20 * 60000; }
+  async function maybeBrief(force){
+    const d = S.data; if (!d || !S.sample) return;
+    if (!force && !briefStale()) return;
+    const b = d.briefing || {};
+    let ctx = []; try { ctx = await sql("select public.brief_context() as f"); } catch {}
+    const pool = new Map(); for (const s of (d.stories || []).filter((s) => s.ai).slice(0, 25)) pool.set(s.id, { id: s.id, importance: s.importance, title: s.title, summary: s.summary, d: (s.first_seen || "").slice(0, 10), n: s.source_count });
+    for (const s of Array.isArray(ctx) ? ctx : []) if (!pool.has(s.id)) pool.set(s.id, s);
+    const stories = [...pool.values()]; if (stories.length < 3) return;
+    setAI("busy");
+    const prev = b.state || {}; const prevRecs = b.recs || [];
+    const prompt = `You maintain the live status board of Israel's transfer of power (Knesset and government hand-over). Today is ${todayISO()}. Calendar: ${(d.calendar || []).map((c) => `${c.label} ${c.date}`).join("; ")}. Seats: ${(d.parties || []).map((p) => `${p.p} ${p.s}`).join(", ")}. Benjamin Netanyahu is caretaker PM until a new government is sworn in.
+PREVIOUS STATE — verified; keep every value unless a story below clearly reports a NEWER development (never guess, never downgrade a known value to unknown):
+${JSON.stringify({ state: prev, recs: prevRecs.map((r) => ({ p: r.p, rec: r.rec })) })}
+STORIES FROM THE LAST 7 DAYS (id, date, importance, title — summary):
+${stories.map((s) => `#${s.id} ${s.d || ""} [${s.importance}] ${s.title}${s.summary ? " — " + s.summary : ""}`).join("\n")}
+Return ONLY JSON, Hebrew text, neutral and factual:
+{"bullets":["3-5 bullets <=120 chars: what matters most right now, most consequential and most recent first"],
+ "phase":"one sentence <=140 chars on where the process stands today",
+ "state":{"stage":"consultations|mandate|forming|extension|second_mandate|knesset_61|confidence|government|new_elections",
+   "pm":"current PM","pm_status":"e.g. ראש ממשלת מעבר",
+   "mandate":{"holder":null or "full name","given":null or "YYYY-MM-DD","extended":false,"sid":null or id},
+   "knesset_sworn":true/false/null,"speaker":null or name,
+   "events":[{"date":"YYYY-MM-DD","label":"<=70 chars milestone that already happened","sid":id or null}] (keep previous events, add new ones, max 10),
+   "coalition":[{"p":"party from the seats list","status":"in|talks|out|unknown","note":"<=40 chars","sid":id or null}] (stance toward the mandate holder, or the leading candidate if none)},
+ "recs":[{"p":"party","rec":"surname e.g. נתניהו/איזנקוט, or אף מועמד, or לא ידוע","sid":id or null}] (one per party; keep previous values unless changed)}`;
+    try {
+      const r = await askJSON(prompt);
+      if (!r || !Array.isArray(r.bullets)) throw new Error("bad brief");
+      const ids = new Set(stories.map((s) => s.id));
+      const recs = (d.parties || []).map((p) => {
+        const old = prevRecs.find((o) => o.p === p.p); const nw = (r.recs || []).find((x) => x.p === p.p);
+        const known = (x) => x && x.rec && x.rec !== "לא ידוע";
+        if (!known(nw)) return old || { p: p.p, rec: "לא ידוע" };
+        if (known(old) && old.rec !== nw.rec && !(nw.sid && ids.has(+nw.sid))) return old;
+        return known(old) && old.rec === nw.rec ? { ...old, sid: old.sid || nw.sid } : { p: p.p, rec: nw.rec, sid: nw.sid || null };
+      });
+      const st = r.state && typeof r.state === "object" ? r.state : prev;
+      if (prev.events && st.events) { for (const e of prev.events) if (!st.events.some((x) => x.date === e.date && x.label === e.label)) st.events.push(e); st.events = st.events.sort((a, b) => String(a.date).localeCompare(String(b.date))).slice(-12); }
+      if (prev.mandate && prev.mandate.holder && !(st.mandate && st.mandate.holder)) st.mandate = prev.mandate;
+      await sql(`select public.set_briefing(${jsonLit({ bullets: r.bullets.slice(0, 6), phase: r.phase || "", state: st, recs })}) as f`);
+      S.ai.briefErr = ""; await load();
+    } catch (e) { console.warn("brief", e); S.ai.briefErr = String(e && (e.code || e.message) || e).slice(0, 80); }
+    setAI(S.ai.briefErr ? "err" : "ok");
+  }
+
+  // ---------- alerts ----------
+  let actx = null;
+  const unlock = () => { try { actx = actx || new (window.AudioContext || window.webkitAudioContext)(); actx.resume(); } catch {} };
+  function beep(){ if (!S.snd) return; try { navigator.vibrate && navigator.vibrate([180, 80, 180]); } catch {} try { if (!actx) return; const t = actx.currentTime; [0, .18].forEach((d, i) => { const o = actx.createOscillator(), g = actx.createGain(); o.frequency.value = i ? 1046 : 880; g.gain.setValueAtTime(.0001, t + d); g.gain.exponentialRampToValueAtTime(.25, t + d + .02); g.gain.exponentialRampToValueAtTime(.0001, t + d + .16); o.connect(g).connect(actx.destination); o.start(t + d); o.stop(t + d + .17); }); } catch {} }
+  function processAlerts(){
+    const st = S.data.stories || [], t = now(), fresh = []; const first = !Object.keys(S.alerted).length && !S.lastVisit;
+    for (const s of st) { if (!s.ai) continue; const a = S.alerted[s.id] || {}, age = (t - Date.parse(s.first_seen)) / 60000, why = [];
+      if (s.importance >= S.thr && (a.imp || 0) < s.importance && (age < 180 || a.imp)) why.push(a.imp ? "הסלמה" : "התפתחות חשובה");
+      if (S.vel && s.v30 >= 4 && !a.vel) why.push("מתפוצץ עכשיו");
+      if (!why.length) continue; S.alerted[s.id] = { imp: Math.max(a.imp || 0, s.importance >= S.thr ? s.importance : 0), vel: a.vel || s.v30 >= 4 };
+      if (first && age > 30) continue; fresh.push({ s, why: why[0] }); }
+    const ids = new Set(st.map((s) => String(s.id))); for (const k of Object.keys(S.alerted)) if (!ids.has(k)) delete S.alerted[k];
+    store.set("alerted", S.alerted);
+    if (fresh.length) { fresh.sort((x, y) => y.s.importance - x.s.importance); S.toasts = [...fresh.slice(0, 2), ...S.toasts].slice(0, 3); S.unread += fresh.length; beep(); }
+    document.title = (S.unread ? `(${S.unread}) ` : "") + "חילופי שלטון · חדר מצב";
+    renderToasts();
+  }
+  function renderToasts(){
+    $("toasts").innerHTML = S.toasts.map((a, i) => `<div class="toast ${a.s.importance >= 9 ? "" : "o"}" data-open="${a.s.id}"><div style="flex:1"><div class="k">● ${esc(a.why)} · ${a.s.importance}/10 · ${a.s.source_count} מקורות · ${ago(a.s.first_seen)}</div><div class="t" dir="auto">${esc(a.s.title)}</div></div><button class="x" data-x="${i}" aria-label="סגור">✕</button></div>`).join("");
+  }
+  $("toasts").addEventListener("click", (e) => { const x = e.target.closest("[data-x]"); if (x) { S.toasts.splice(+x.dataset.x, 1); renderToasts(); return; } const o = e.target.closest("[data-open]"); if (o) { const id = +o.dataset.open; S.toasts = S.toasts.filter((t) => t.s.id !== id); renderToasts(); openStory(id); } S.unread = 0; document.title = "חילופי שלטון · חדר מצב"; });
+  setInterval(() => { if (S.toasts.length) { S.toasts.pop(); renderToasts(); } }, 25000);
+
+  // ---------- derived state ----------
+  function derive(){
+    const d = S.data, b = d.briefing || {}, st = b.state || {}, cal = d.calendar || [];
+    const calDate = (k) => (cal.find((c) => c.k === k) || {}).date;
+    const knessetDate = calDate("knesset"), mDeadline = calDate("mandate_deadline");
+    const sworn = st.knesset_sworn === true || (st.knesset_sworn !== false && knessetDate && daysTo(knessetDate) < 0);
+    let stage = st.stage || (st.mandate && st.mandate.holder ? "forming" : "consultations");
+    if (stage === "mandate" && st.mandate && st.mandate.holder) stage = "forming";
+    const map = { results:0, consultations:1, mandate:2, forming:3, extension:3, second_mandate:3, knesset_61:3, confidence:4, government:5, new_elections:-1 };
+    return { b, st, cal, knessetDate, mDeadline, sworn, stage, idx: map[stage] ?? 1 };
+  }
+  function tallyData(){
+    const d = S.data, parties = d.parties || [], recs = (d.briefing || {}).recs || [];
+    const by = Object.fromEntries(recs.map((r) => [r.p, r])); const g = {};
+    for (const p of parties) { const r = by[p.p]; const k = r && r.rec && r.rec !== "לא ידוע" ? r.rec : "לא ידוע"; (g[k] ||= { seats: 0, parties: [] }); g[k].seats += p.s; g[k].parties.push(p.p); }
+    const cands = Object.entries(g).filter(([k]) => k !== "לא ידוע" && k !== "אף מועמד").sort((a, b) => b[1].seats - a[1].seats);
+    const color = { "אף מועמד": "#6b7385" }; cands.forEach(([k], i) => (color[k] = CC[i % CC.length]));
+    const order = [...cands, ...(g["אף מועמד"] ? [["אף מועמד", g["אף מועמד"]]] : []), ...(g["לא ידוע"] ? [["לא ידוע", g["לא ידוע"]]] : [])];
+    return { by, g, cands, color, order, any: recs.some((r) => r.rec && r.rec !== "לא ידוע") };
+  }
+  function tallyBar(T, big){
+    return `<div class="tbar">${T.order.map(([k, v]) => `<div style="width:${v.seats / 120 * 100}%;background:${k === "לא ידוע" ? "transparent" : T.color[k]}">${big && v.seats >= 6 && k !== "לא ידוע" ? v.seats : ""}</div>`).join("")}<span class="m"></span></div>
+      <div class="tleg">${T.cands.map(([k, v]) => `<span><i style="background:${T.color[k]}"></i>${esc(k)} <b>${v.seats}</b></span>`).join("")}${T.g["אף מועמד"] ? `<span><i style="background:#6b7385"></i>אף מועמד <b>${T.g["אף מועמד"].seats}</b></span>` : ""}${T.g["לא ידוע"] ? `<span><i style="background:var(--p3)"></i>טרם ידוע <b>${T.g["לא ידוע"].seats}</b></span>` : ""}<span style="margin-inline-start:auto;color:var(--muted)">רוב: 61</span></div>`;
+  }
+
+  // ---------- views ----------
+  function filtered(list){
+    let st = list || [];
+    if (S.actor) st = st.filter((s) => actorMatch(txt(s), S.actor));
+    if (S.q) { const q = S.q.toLowerCase(); st = st.filter((s) => txt(s).includes(q)); }
+    return st;
+  }
+  function row(s, big){
+    const top = s.articles && s.articles[0]; const names = [...new Set((s.articles || []).map((a) => a.o))];
+    const isNew = S.lastVisit && Date.parse(s.first_seen) > S.lastVisit; const recent = now() - Date.parse(s.first_seen) < 3 * 3600e3;
+    const flag = !s.ai ? `<span class="fl q">ממתין לניתוח</span>` : s.breaking && recent ? `<span class="fl brk">מבזק</span>` : s.v30 >= 2 ? `<span class="fl hot">🔥 ${s.v30} בחצי שעה</span>` : isNew ? `<span class="fl nwq">חדש</span>` : "";
+    return `<div class="st ${big ? "big" : ""}" data-open="${s.id}">
+      <div class="sc ${s.ai ? ic(s.importance) : "q"}"><b>${s.ai ? s.importance : "·"}</b><i></i></div>
+      <div class="sb"><div class="kk">${flag}<span>${esc(TOPICS[s.topic] || "")}</span><span>·</span><span>${ago(s.last_seen)}</span></div>
+        <div class="tt" dir="auto">${esc(s.title)}</div>
+        ${big && s.summary ? `<div class="sm" dir="auto">${esc(s.summary)}</div>` : ""}
+        <div class="src"><span class="stack">${names.slice(0, 4).map(logo).join("")}</span>${s.source_count > 1 ? `${s.source_count} מקורות` : esc(names[0] || "")}</div></div>
+      ${top ? `<a class="go" href="${esc(top.u)}" target="_blank" rel="noopener" aria-label="לכתבה">${IC.ext}</a>` : ""}
+    </div>`;
+  }
+  function viewHome(){
+    const d = S.data, D = derive(), st = D.st; let h = "";
+    const filt = S.actor || S.q;
+    if (!filt) {
+      // status hero
+      const m = st.mandate || {};
+      let mandateTile;
+      if (m.holder && m.given) {
+        const used = Math.max(0, -daysTo(m.given)); const total = m.extended ? 42 : 28; const left = total - used;
+        mandateTile = `<div class="tile"><div class="l">המנדט להרכבת ממשלה</div><div class="v">${esc(m.holder)}</div><div class="s">${left >= 0 ? `נותרו <b>${left}</b> ימים מתוך ${total}` : "המועד חלף"}${!m.extended ? " · אפשרות להארכה עד 14" : ""}</div><div class="prog ${left <= 7 ? "bad" : left <= 14 ? "warn" : ""}"><i style="width:${Math.min(100, used / total * 100)}%"></i></div></div>`;
+      } else {
+        const n = D.mDeadline ? daysTo(D.mDeadline) : null;
+        mandateTile = `<div class="tile"><div class="l">המנדט להרכבת ממשלה</div><div class="v">טרם הוטל</div><div class="s">${D.mDeadline ? `מועד אחרון ${dmy(D.mDeadline)} · <b>${inDays(n)}</b>` : "ממתין להחלטת הנשיא"}</div>${n != null && n >= 0 ? `<div class="prog warn"><i style="width:${Math.max(5, 100 - n / 7 * 100)}%"></i></div>` : ""}</div>`;
+      }
+      const kn = D.knessetDate ? daysTo(D.knessetDate) : null;
+      const knTile = `<div class="tile"><div class="l">הכנסת ה־26</div><div class="v">${D.sworn ? "הושבעה" : "טרם הושבעה"}</div><div class="s">${D.sworn ? (st.speaker ? `יו״ר: ${esc(st.speaker)}` : `השבעה ${D.knessetDate ? dmy(D.knessetDate) : ""}`) : `השבעה ${dmy(D.knessetDate)} · <b>${inDays(kn)}</b>`}</div></div>`;
+      const steps = STAGES.map(([k, l], i) => `<div class="step ${D.idx > i ? "done" : D.idx === i ? "cur" : ""}"><div class="d"></div>${l}</div>`).join("");
+      const T = tallyData();
+      h += `<section class="status">
+        <div class="kick">ראש הממשלה</div>
+        <div class="pm"><b>${esc(st.pm || "בנימין נתניהו")}</b><span class="badge ${D.stage === "government" ? "g" : ""}">${esc(st.pm_status || "ראש ממשלת מעבר")}</span></div>
+        <div class="tiles">${mandateTile}${knTile}</div>
+        <div class="steps">${steps}</div>
+        ${D.stage === "new_elections" ? `<div class="alt">⚠️ התהליך הסתיים בלי ממשלה — בדרך לבחירות חוזרות.</div>` : ""}
+        ${T.any ? `<div class="tally"><div class="kick" style="margin-bottom:6px">המלצות לנשיא</div>${tallyBar(T)}</div>` : ""}
+        <div class="foot"><span id="aiS" class="ai"><i></i><span>Claude</span></span><span>${d.feeds ? `${d.feeds.ok}/${d.feeds.total} מקורות` : ""}</span>${D.b.at ? `<span>לוח עודכן ${ago(D.b.at)}</span>` : ""}</div>
+      </section>`;
+      // briefing
+      const b = D.b;
+      if (b.bullets && b.bullets.length) h += `<section class="brief"><div class="t">🧭 השורה התחתונה<small>${b.at ? "עודכן " + ago(b.at) : ""}</small></div><ol>${b.bullets.map((x) => `<li dir="auto">${esc(x)}</li>`).join("")}</ol></section>`;
+      else h += `<section class="brief wait">🧭 Claude יכתוב כאן את השורה התחתונה ויעדכן את לוח המצב ברגע שיסיים לנתח את הידיעות האחרונות.</section>`;
+      // now strip
+      const hot = (d.stories || []).filter((s) => s.ai && s.importance >= 7 && now() - Date.parse(s.last_seen) < 2 * 3600e3).slice(0, 6);
+      if (hot.length) h += `<div class="h">עכשיו<span class="c">· שעתיים אחרונות</span></div><div class="now">${hot.map((s) => { const names = [...new Set((s.articles || []).map((a) => a.o))]; return `<div class="nw" data-open="${s.id}"><div class="k">● ${s.importance}/10 · ${ago(s.last_seen)}${s.v30 >= 2 ? ` · 🔥 ${s.v30} בחצי שעה` : ""}</div><div class="tt" dir="auto">${esc(s.title)}</div><div class="ft"><span class="stack">${names.slice(0, 4).map(logo).join("")}</span>${s.source_count} מקורות</div></div>`; }).join("")}</div>`;
+    }
+    const all = filtered(d.stories); const ai = all.filter((s) => s.ai), wait = all.filter((s) => !s.ai);
+    const nNew = S.lastVisit ? ai.filter((s) => Date.parse(s.first_seen) > S.lastVisit).length : 0;
+    h += `<div class="h">${filt ? "תוצאות" : "הסיפורים החשובים"}<span class="c">· ${ai.length}${nNew ? ` · ${nNew} חדשים מאז הביקור הקודם` : ""}</span></div>`;
+    if (!ai.length && !wait.length) return h + `<div class="empty">אין ידיעות שתואמות.</div>`;
+    const lim = S.showAll ? ai.length : 12;
+    if (ai.length) h += `<div class="list">${ai.slice(0, lim).map((s, i) => row(s, i === 0 && !filt)).join("")}${ai.length > lim ? `<button class="more" id="showAll">עוד ${ai.length - lim} סיפורים</button>` : ""}</div>`;
+    if (wait.length) h += `<div class="h">ממתינות לניתוח<span class="c">· ${wait.length}</span></div><div class="list">${wait.slice(0, 8).map((s) => row(s)).join("")}</div>`;
+    return h;
+  }
+  function viewLive(){
+    let w = S.data.wire || [];
+    if (S.actor) w = w.filter((x) => actorMatch(x.t.toLowerCase(), S.actor));
+    if (S.q) { const q = S.q.toLowerCase(); w = w.filter((x) => x.t.toLowerCase().includes(q)); }
+    if (!w.length) return `<div class="empty">אין דיווחים בשלוש השעות האחרונות.</div>`;
+    let h = `<div class="h">כל הדיווחים לפי הסדר<span class="c">· 3 שעות · מתעדכן כל דקה</span></div><div class="list">`; let lh = null;
+    for (const x of w) { const hr = new Date(x.p).toLocaleTimeString("he-IL", { hour: "2-digit", timeZone: "Asia/Jerusalem" }); if (hr !== lh) { h += `<div class="hr">${hr}:00</div>`; lh = hr; }
+      h += `<a class="wr" href="${esc(x.u)}" target="_blank" rel="noopener"><span class="tm">${hhmm(x.p)}</span><span class="x"><span class="o">${logo(x.o)}${esc(x.o)}</span><span class="t" dir="auto">${esc(x.t)}</span></span>${x.ai && x.imp ? `<span class="im ${ic(x.imp)}">${x.imp}</span>` : ""}</a>`; }
+    return h + `</div>`;
+  }
+  function viewMap(){
+    const d = S.data, D = derive(), T = tallyData(), parties = d.parties || [], coal = (D.st.coalition || []);
+    const cBy = Object.fromEntries(coal.map((c) => [c.p, c])); const sById = Object.fromEntries((d.stories || []).map((s) => [s.id, s]));
+    const link = (sid) => { const s = sid && sById[sid]; return s && s.articles && s.articles[0] ? s.articles[0].u : null; };
+    const holder = (D.st.mandate || {}).holder;
+    const stat = { in: ["בקואליציה המתגבשת", "var(--green)"], talks: ["במו״מ", "var(--amber)"], out: ["מחוץ", "var(--red)"] };
+    const coalSeats = parties.reduce((a, p) => a + ((cBy[p.p] || {}).status === "in" ? p.s : 0), 0);
+    const talkSeats = parties.reduce((a, p) => a + ((cBy[p.p] || {}).status === "talks" ? p.s : 0), 0);
+    let h = `<section class="card big"><h3>מי ממליץ על מי לנשיא</h3><div class="sub">לפי דיווחים בתקשורת${D.b.at ? ` · עודכן ${ago(D.b.at)}` : ""} · חילוץ אוטומטי, לא נתון רשמי</div><div style="margin-top:12px">${tallyBar(T, true)}</div></section>`;
+    if (coal.length) h += `<section class="card" style="margin-top:10px"><h3>חשבון הקואליציה${holder ? ` · ${esc(holder)}` : ""}</h3><div class="sub">כמה מנדטים יש כבר, וכמה במו״מ, מול הרוב הנדרש</div>
+      <div style="margin-top:12px"><div class="tbar" style="height:20px;border-radius:8px"><div style="width:${coalSeats / 120 * 100}%;background:var(--green)"></div><div style="width:${talkSeats / 120 * 100}%;background:var(--amber);opacity:.8"></div><span class="m"></span></div>
+      <div class="tleg"><span><i style="background:var(--green)"></i>בפנים <b>${coalSeats}</b></span><span><i style="background:var(--amber)"></i>במו״מ <b>${talkSeats}</b></span><span style="margin-inline-start:auto;color:var(--muted)">חסרים ${Math.max(0, 61 - coalSeats)} לרוב</span></div></div></section>`;
+    h += `<div class="h">11 הסיעות בכנסת ה־26</div><section class="card">`;
+    const maxS = Math.max(...parties.map((p) => p.s), 1);
+    for (const p of parties) {
+      const r = T.by[p.p]; const rec = r && r.rec && r.rec !== "לא ידוע" ? r.rec : null; const c = cBy[p.p];
+      const ev = link((r || {}).sid) || (r && r.url) || link((c || {}).sid);
+      h += `<div class="pr"><span class="n">${p.s}</span><span class="p">${esc(p.p)}</span>${ev ? `<a class="ev" href="${esc(ev)}" target="_blank" rel="noopener">מקור ↗</a>` : "<span></span>"}
+        <div class="tags">${rec ? `<span class="pill" style="background:${T.color[rec] || "#6b7385"};color:#fff">ממליצה: ${esc(rec)}</span>` : `<span class="pill u">המלצה: טרם ידוע</span>`}${c && stat[c.status] ? `<span class="pill" style="background:transparent;border:1px solid ${stat[c.status][1]};color:${stat[c.status][1]}">${stat[c.status][0]}</span>` : ""}${c && c.note ? `<span style="font-size:12px;color:var(--muted)">${esc(c.note)}</span>` : ""}</div>
+      </div>`;
+    }
+    h += `</section>
+      <div class="h">איך מגיעים לממשלה</div><section class="card"><ol class="proc">
+        <li><span><b>התייעצויות:</b> כל סיעה ממליצה לנשיא על מועמד. הנשיא צריך להטיל את המשימה תוך 7 ימים מפרסום התוצאות.</span></li>
+        <li><span><b>מנדט ראשון:</b> 28 ימים להרכבת ממשלה, עם אפשרות להארכה של עד 14 ימים.</span></li>
+        <li><span><b>אם נכשל:</b> הנשיא יכול להטיל מנדט על ח״כ אחר, או להעביר את ההכרעה לכנסת — 61 ח״כים יכולים להציע מועמד.</span></li>
+        <li><span><b>אמון:</b> הממשלה מוצגת בכנסת וצריכה רוב בהצבעת אמון. עד אז ממשלת המעבר ממשיכה לכהן.</span></li>
+        <li><span><b>אם כל המסלולים נכשלים:</b> הכנסת מתפזרת ונערכות בחירות חוזרות.</span></li>
+      </ol></section>`;
+    return h;
+  }
+  function viewTime(){
+    const d = S.data, D = derive(), st = D.st; const items = [];
+    for (const c of D.cal) items.push({ date: c.date, label: c.label });
+    for (const e of st.events || []) if (e && e.date && e.label && !items.some((x) => x.date === e.date && x.label === e.label)) items.push({ date: e.date, label: e.label, sid: e.sid, url: e.url });
+    const m = st.mandate || {};
+    if (m.holder && m.given) { items.push({ date: addDays(m.given, 28), label: `תום 28 הימים של ${m.holder}` }); items.push({ date: addDays(m.given, 42), label: "תום ההארכה האפשרית (14 ימים)" }); }
+    items.sort((a, b) => a.date.localeCompare(b.date));
+    const sById = Object.fromEntries((d.stories || []).map((s) => [s.id, s])); let nextMarked = false;
+    let h = `<div class="h">אבני דרך</div><section class="card"><div class="tl">`;
+    for (const it of items) { const n = daysTo(it.date); const done = n < 0 || (n === 0 && it.sid); let cls = done ? "done" : ""; if (!done && !nextMarked) { cls = "next"; nextMarked = true; }
+      const s = it.sid && sById[it.sid]; h += `<div class="ev2 ${cls}"><div class="dt">${dmy(it.date)}${!done ? ` · <span class="cd">${inDays(n)}</span>` : ""}</div><div class="lb" dir="auto">${esc(it.label)}</div>${s ? `<a href="#" data-open="${s.id}">לידיעה</a>` : it.url ? `<a href="${esc(it.url)}" target="_blank" rel="noopener">מקור ↗</a>` : ""}</div>`; }
+    h += `</div></section>`;
+    const list = filtered(d.stories).filter((s) => s.ai).sort((a, b) => Date.parse(b.first_seen) - Date.parse(a.first_seen));
+    let lastDay = null, open = false;
+    for (const s of list) { const day = dayName(s.first_seen); if (day !== lastDay) { if (open) h += `</div>`; h += `<div class="h">${esc(day)}</div><div class="list">`; open = true; lastDay = day; } h += row(s); }
+    if (open) h += `</div>`;
+    return h;
+  }
+
+  function renderAI(){
+    const el = $("aiS"); if (!el) return; const p = S.ai.pending ?? (S.data && S.data.pending_ai) ?? 0;
+    el.className = "ai " + (S.ai.state === "busy" ? "busy" : S.ai.state === "err" ? "err" : "");
+    el.querySelector("span").textContent = !S.sample ? (S.data && S.data.last_run && S.data.last_run.ai_used ? "Claude בשרת" : "Claude כבוי") : S.ai.state === "busy" ? `Claude מנתח${p ? ` · ${p} בתור` : "…"}` : S.ai.state === "err" ? "Claude ינסה שוב" : p ? `Claude · ${p} בתור` : "Claude מעודכן";
+  }
+  function renderChrome(){
+    const lr = S.data && S.data.last_run; const age = lr ? (now() - Date.parse(lr.finished_at)) / 60000 : 99;
+    $("live").classList.toggle("on", age < 8);
+    $("clock").textContent = lr ? `סריקה ${ago(lr.finished_at)}` : "ממתין לסריקה";
+    const live = ((S.data && S.data.wire) || []).filter((x) => now() - Date.parse(x.p) < 30 * 60000).length;
+    $("liveN").textContent = live; $("liveN").classList.toggle("hide", !live);
+    const showChips = S.tab === "home" || S.tab === "live" || S.tab === "time";
+    $("chips").classList.toggle("hide", !showChips || !S.filtersOpen);
+    $("chips").innerHTML = ACTORS.map((a) => `<button class="chip ${S.actor === a[0] ? "on" : ""}" data-actor="${esc(a[0])}">${esc(a[0])}</button>`).join("");
+    renderAI();
+  }
+  function render(){
+    renderChrome(); if (!S.data) return;
+    $("view").innerHTML = S.tab === "live" ? viewLive() : S.tab === "map" ? viewMap() : S.tab === "time" ? viewTime() : viewHome();
+    renderAI();
+    const sa = $("showAll"); if (sa) sa.onclick = (e) => { e.stopPropagation(); S.showAll = true; render(); };
+  }
+
+  // ---------- story sheet ----------
+  function openStory(id){
+    const s = ((S.data && S.data.stories) || []).find((x) => x.id === id); if (!s) return;
+    const top = s.articles && s.articles[0]; const b = s.b || [s.importance * 10, 0, 0, 0, 0, 0, 1];
+    const r = (l, v) => v ? `<div class="r"><span>${l}</span><b>${v > 0 ? "+" : ""}${v}</b></div>` : "";
+    $("panel").innerHTML = `<div class="grab"></div><div class="dh">
+      <div class="kk">${s.ai ? `<span class="fl ${s.importance >= 9 ? "brk" : s.importance >= 7 ? "hot" : "nwq"}">חשיבות ${s.importance}/10</span>` : `<span class="fl q">ממתין לניתוח</span>`}<span>${esc(TOPICS[s.topic] || "")}</span><span>·</span><span>${s.source_count} מקורות · עודכן ${ago(s.last_seen)}</span></div>
+      <h2 dir="auto">${esc(s.title)}</h2>${s.summary ? `<p dir="auto">${esc(s.summary)}</p>` : ""}</div>
+      ${s.why ? `<div class="why"><b>למה זה חשוב:</b> ${esc(s.why)}</div>` : ""}
+      ${top ? `<a class="primary" href="${esc(top.u)}" target="_blank" rel="noopener">לכתבה ב־${esc(top.o)} ${IC.ext}</a>` : ""}
+      <div class="arts"><div class="kick">כל הדיווחים</div>${(s.articles || []).map((a) => `<a class="ar" href="${esc(a.u)}" target="_blank" rel="noopener"><span class="o">${logo(a.o)}<span>${esc(a.o)}</span></span><span class="t" dir="auto">${esc(a.t)}</span><span class="tm">${hhmm(a.p)}</span></a>`).join("")}</div>
+      <div class="calc"><div class="kick" style="margin-bottom:4px">למה הוא במקום הזה</div>
+        ${r(`חשיבות ${s.importance}/10 ×10`, b[0])}${r(`${s.source_count} כלי תקשורת`, b[1])}${r(`${s.v30} דיווחים בחצי השעה האחרונה`, b[2])}${r("מבזק טרי", b[3])}${r("מסוקר גם בעולם", b[4])}${r("הדירוג שלך", b[5])}
+        <div class="r"><span>דעיכה · דיווח אחרון ${ago(s.last_seen)}</span><b>×${Number(b[6]).toFixed(2)}</b></div><div class="r tot"><span>ציון כולל</span><b>${Math.round(s.score)}</b></div></div>
+      <div class="votes"><button data-vote="1" data-id="${s.id}" class="${s.uv > 0 ? "on" : ""}">▲ חשוב יותר</button><button data-vote="-1" data-id="${s.id}" class="${s.uv < 0 ? "on" : ""}">▼ חשוב פחות</button></div>
+      <div class="hint">הדירוג שלך מזיז את הסיפור מיד ומלמד את Claude מה חשוב לך בסיפורים הבאים.</div>`;
+    $("sheet").classList.add("open");
+  }
+  async function vote(id, v){
+    const s = (S.data.stories || []).find((x) => x.id === id); if (!s) return;
+    const nv = s.uv === v ? 0 : v, delta = (nv - (s.uv || 0)) * 25; s.uv = nv;
+    if (s.b) { s.b[5] = 25 * nv; s.score = Math.max(0, Math.round((s.score + delta * s.b[6]) * 10) / 10); }
+    openStory(id); render();
+    try { await sql(`select public.rate_story(${Number(id) | 0}, ${v > 0 ? 1 : -1}) as f`); } catch {}
+  }
+
+  // ---------- settings sheet ----------
+  function openMenu(tab){
+    tab = tab || "how";
+    const seg = `<div class="seg">${[["how","איך זה עובד"],["src","מקורות"],["set","התראות"]].map(([k, l]) => `<button data-seg="${k}" class="${k === tab ? "on" : ""}">${l}</button>`).join("")}</div>`;
+    let body = "";
+    if (tab === "how") body = `<div class="doc">
+      <h4>מה זה</h4><p>חדר מצב לחילופי השלטון: איפה עומד תהליך הרכבת הממשלה, מה קרה בשעות האחרונות ומה באמת חשוב — מכל כלי התקשורת, במקום אחד.</p>
+      <h4>מאיפה הנתונים</h4><p>כל <b>3 דקות</b> שרת בענן קורא אתרי חדשות ישראליים וזרים, Google News וערוצי טלגרם של כלי תקשורת. הדף מתרענן כל דקה.</p>
+      <h4>מה Claude עושה</h4><p>מסנן מה שאינו פוליטי, מאחד דיווחים על אותו אירוע (גם עברית ואנגלית), כותב כותרת וסיכום ניטרליים, נותן ציון חשיבות, ומעדכן את לוח המצב: מי מחזיק במנדט, כמה ימים נותרו, מי ממליץ על מי ומי במו״מ. כל קביעה בלוח מקושרת לידיעה שעליה היא מבוססת. הנתונים מתעדכנים אוטומטית.</p>
+      <h4>המספר ליד כל סיפור (1–10)</h4><p><b>10</b> הקמת ממשלה / הטלת מנדט / בחירות חוזרות · <b>8–9</b> המלצה רשמית, הסכם נחתם או קרס, השבעת הכנסת · <b>6–7</b> מו״מ מהותי, אולטימטום, החלטה משפטית חשובה · <b>4–5</b> הצהרות · <b>1–3</b> פרשנות. לפי ההשלכה בפועל — לא לפי מי מרוויח.</p>
+      <h4>הסדר ברשימה</h4><p>חשיבות ×10 + כמה כלי תקשורת שונים מדווחים (סוכנויות וזרים שוקלים יותר) + קצב בחצי השעה האחרונה + מבזק טרי + סיקור בעולם + הדירוג שלך, וכל זה <b>דועך בחצי כל שעתיים וחצי</b> בלי דיווח חדש.</p>
+      <h4>הדירוג שלך</h4><p>▲/▼ בכל סיפור מזיזים אותו מיד, והתיקונים נשלחים ל־Claude כדוגמאות לכיול.</p>
+      <h4>מגבלות</h4><p>כאן, ערוץ 14 ו־Times of Israel חוסמים קריאה ישירה ונכנסים דרך Google News וטלגרם. לוח המצב הוא חילוץ אוטומטי מהתקשורת, לא נתון רשמי. ההתראות מופיעות כשהדף פתוח.</p></div>`;
+    if (tab === "set") body = `<div class="row"><span>התראה על סיפור בחשיבות</span><select id="thr">${[7,8,9,11].map((v) => `<option value="${v}" ${S.thr === v ? "selected" : ""}>${v === 11 ? "כבוי" : v + " ומעלה"}</option>`).join("")}</select></div>
+      <div class="row"><span>התראה על סיפור שמתפוצץ (4+ דיווחים בחצי שעה)</span><button class="tg ${S.vel ? "on" : ""}" id="tVel"></button></div>
+      <div class="row"><span>צליל ורטט</span><button class="tg ${S.snd ? "on" : ""}" id="tSnd"></button></div>
+
+      <div class="hint">${S.sample ? "Claude מנתח ידיעות חדשות כל ~2 דקות ומעדכן את לוח המצב כל ~15 דקות." : "הניתוח דרך החשבון לא זמין בתצוגה הזו."}</div>
+      ${S.ai.briefErr ? `<div class="hint" style="color:var(--amber)">העדכון האחרון של הלוח נכשל: ${esc(S.ai.briefErr)}</div>` : ""}
+      ${S.sample ? `<button class="primary" id="forceBrief" style="width:100%">עדכן את לוח המצב עכשיו</button>` : ""}`;
+    if (tab === "src") body = `<div id="srcList" class="doc">טוען…</div>`;
+    $("panel").innerHTML = `<div class="grab"></div>${seg}${body}`;
+    $("sheet").classList.add("open");
+    if (tab === "src") loadSources();
+  }
+  async function loadSources(){
+    try {
+      const list = await sql("select public.sources_json() as f"); const act = list.filter((s) => s.active), off = list.filter((s) => !s.active);
+      const r = (s) => { const ok = s.last_ok_at && now() - Date.parse(s.last_ok_at) < 30 * 60000; return `<div class="srow"><span class="dt ${!s.active ? "off" : ok ? "" : "bad"}"></span><span class="nm"><b>${s.kind === "telegram" ? "✈︎ " : ""}${esc(s.name)}</b><small>${s.active ? (s.last_ok_at ? "נקרא " + ago(s.last_ok_at) : "טרם נקרא") : (s.err && /40[34]|not a feed|no telegram/.test(s.err) ? "חסום / לא זמין" : "לא פעיל")} · ${s.region === "world" ? "עולם" : "ישראל"}</small></span><span class="c">${s.n24 || 0}</span></div>`; };
+      const el = $("srcList"); if (el) el.innerHTML = `<p class="hint">המספר = ידיעות פוליטיות ב־24 השעות האחרונות. Google News מביא גם את כאן, N12, חדשות 13, ערוץ 14, Times of Israel, Reuters ו־AP.</p><h4>פעילים (${act.length})</h4>${act.map(r).join("")}<h4>לא פעילים / חסומים (${off.length})</h4>${off.map(r).join("")}`;
+    } catch { const el = $("srcList"); if (el) el.textContent = "לא הצלחתי לטעון את רשימת המקורות."; }
+  }
+
+  // ---------- events ----------
+  $("nav").addEventListener("click", (e) => { const b = e.target.closest("button[data-tab]"); if (!b) return; S.tab = b.dataset.tab; [...$("nav").children].forEach((x) => x.classList.toggle("on", x === b)); S.showAll = false; render(); window.scrollTo({ top: 0 }); });
+  $("view").addEventListener("click", (e) => { if (e.target.closest("a.go, a.wr, a.ev, a.pr")) return; const o = e.target.closest("[data-open]"); if (o) { e.preventDefault(); openStory(+o.dataset.open); } });
+  $("chips").addEventListener("click", (e) => { const b = e.target.closest("[data-actor]"); if (!b) return; S.actor = S.actor === b.dataset.actor ? null : b.dataset.actor; render(); });
+  $("bSearch").addEventListener("click", () => { S.filtersOpen = !S.filtersOpen; $("sbox").classList.toggle("hide", !S.filtersOpen); $("bSearch").classList.toggle("on", S.filtersOpen); if (S.filtersOpen) $("q").focus(); else { S.q = ""; S.actor = null; $("q").value = ""; } render(); });
+  $("q").addEventListener("input", (e) => { S.q = e.target.value.trim(); render(); });
+  $("bRefresh").addEventListener("click", () => { unlock(); collectNow(); });
+  $("bMenu").addEventListener("click", () => { unlock(); openMenu(); });
+  $("sheet").addEventListener("click", (e) => {
+    if (e.target.id === "sheet") { $("sheet").classList.remove("open"); return; }
+    const v = e.target.closest("[data-vote]"); if (v) { vote(+v.dataset.id, +v.dataset.vote); return; }
+    const sg = e.target.closest("[data-seg]"); if (sg) { openMenu(sg.dataset.seg); return; }
+    if (e.target.id === "tVel") { S.vel = !S.vel; store.set("vel", S.vel); openMenu("set"); }
+    if (e.target.id === "tSnd") { S.snd = !S.snd; store.set("snd", S.snd); unlock(); if (S.snd) beep(); openMenu("set"); }
+    if (e.target.id === "tAI") { S.aiOn = !S.aiOn; store.set("aiOn", S.aiOn); openMenu("set"); if (S.aiOn) aiTick(true); }
+    if (e.target.id === "forceBrief") { $("sheet").classList.remove("open"); maybeBrief(true); }
+  });
+  $("sheet").addEventListener("change", (e) => { if (e.target.id === "thr") { S.thr = +e.target.value; store.set("thr", S.thr); } });
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) { load(); aiTick(); } else store.set("lastVisit", visitAt); });
+  window.addEventListener("pagehide", () => store.set("lastVisit", visitAt));
+  setInterval(() => { if (S.data) render(); }, 30000);
+
+  // ---------- boot (public read-only) ----------
+  S.mcp = {}; S.sample = null;
+  load(true).then(() => loadLogos());
+  setInterval(() => { if (!document.hidden) load(); }, 60000);
+  setTimeout(() => store.set("lastVisit", visitAt), 5 * 60000);
+})();
+</script>
+</body>
+</html>

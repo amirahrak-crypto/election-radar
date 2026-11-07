@@ -384,7 +384,6 @@ main.wrap{will-change:transform}
 .pill.off{border-style:dashed}
 .pill.off::after{content:"↗";font-size:11px;opacity:.8}
 .wcap{display:flex;flex-wrap:wrap;gap:4px 12px;justify-content:center;font-size:11.5px;font-weight:600;color:var(--muted);margin:9px 4px 4px}
-.wcap i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-inline-end:4px;vertical-align:-1px}.wcap .kh{background:var(--red)}.wcap .kw{background:#c3818d}
 .zones{display:grid;gap:8px}
 .zone{all:unset;display:block;cursor:pointer;background:var(--p1);border:1px solid var(--line);border-radius:16px;padding:12px 13px;position:relative;overflow:hidden}
 .zone.hot{border-color:rgba(255,68,88,.45);background:linear-gradient(90deg,rgba(255,68,88,.10),transparent 70%),var(--p1)}
@@ -404,6 +403,44 @@ main.wrap{will-change:transform}
 .ar.war.isnew{border-inline-start:3px solid var(--red)}
 .nd{font-style:normal;background:var(--red);color:#fff;font-size:10px;font-weight:900;border-radius:5px;padding:1px 6px;margin-inline-start:4px}
 .nav .n.r{background:var(--red)}
+/* calm-by-default severity styling */
+.wr-t .live.calm{background:var(--cyan);animation:none;box-shadow:0 0 8px rgba(69,195,255,.6)}
+.wr-t .live.esc{background:var(--amber);animation:lvA 2.4s infinite}
+@keyframes lvA{0%{box-shadow:0 0 0 0 rgba(255,178,36,.5)}80%{box-shadow:0 0 0 9px rgba(255,178,36,0)}100%{box-shadow:0 0 0 0 rgba(255,178,36,0)}}
+.wr-s{display:flex;align-items:center;gap:8px}.wr-s b{color:var(--cyan)}
+.lvchip{font-size:11.5px;font-weight:900;border-radius:7px;padding:2px 8px}
+.lvchip.calm{background:rgba(69,195,255,.12);color:var(--cyan);border:1px solid rgba(69,195,255,.28)}
+.lvchip.esc{background:rgba(255,178,36,.15);color:var(--amber);border:1px solid rgba(255,178,36,.4)}
+.lvchip.emg{background:var(--red);color:#fff}
+.emgbar{background:linear-gradient(90deg,#d81f37,#ff4c60);color:#fff;font-weight:900;font-size:14px;border-radius:12px;padding:9px 12px;margin-bottom:10px;animation:ph 2s infinite}
+.tick{border-color:var(--line2);background:var(--p1)}
+.tick.esc{border-color:rgba(255,178,36,.35);background:linear-gradient(90deg,rgba(255,178,36,.08),rgba(255,178,36,.01))}
+.tick.emg{border-color:rgba(255,68,88,.45);background:linear-gradient(90deg,rgba(255,68,88,.12),rgba(255,68,88,.02))}
+.tk-in b{background:var(--p3);color:var(--ink2)}.tk-in b.esc{background:var(--amber);color:#2a1a00}.tk-in b.emg{background:var(--red);color:#fff}
+.wmap .ar.calm{fill:#152036;stroke:#34507c}
+.wmap .ar.esc{fill:#3a2a10;stroke:#ffb224}
+.wmap .ar.emg{fill:#45161f;stroke:#ff4458;animation:hotfill 2.4s ease-in-out infinite}
+.wmap .arc.esc{stroke:#ffb224;opacity:.55;animation-duration:3s}
+.wmap .arc.emg{stroke:#ff4458}
+.wmap .ld.calm{stroke:rgba(91,140,255,.4)}.wmap .ld.esc{stroke:rgba(255,178,36,.6)}.wmap .ld.emg{stroke:rgba(255,68,88,.75)}
+.wmap .hs.calm .core{fill:#5b8cff}.wmap .hs.esc .core{fill:#ffb224}.wmap .hs.emg .core{fill:#ff4458}
+.wmap .hs.esc .pulse{stroke:#ffb224;stroke-width:2.5;animation:pl 3s ease-out infinite}
+.wmap .hs.emg .pulse{stroke:#ff4458;stroke-width:3;animation:pl 1.4s ease-out infinite}
+.pill.calm i{background:var(--cyan);color:#04121c}
+.pill.esc{border-color:rgba(255,178,36,.7);color:var(--amber);box-shadow:0 0 14px rgba(255,178,36,.25)}
+.pill.esc i{background:var(--amber);color:#2a1a00}
+.pill.emg{background:linear-gradient(180deg,#ff4c60,#d81f37);border-color:#ff8090;color:#fff;animation:ph 1.6s infinite}
+.pill.emg i{background:#fff;color:#c0182b}
+.wcap .k2,.wcap .k3,.wcap .k4,.wcap .ku{display:inline-block;width:8px;height:8px;border-radius:50%;margin-inline-end:4px;vertical-align:-1px}
+.wcap .k2{background:#5b8cff}.wcap .k3{background:var(--amber)}.wcap .k4{background:var(--red)}.wcap .ku{background:var(--cyan);border-radius:3px}
+.zone.esc{border-color:rgba(255,178,36,.45);background:linear-gradient(90deg,rgba(255,178,36,.09),transparent 70%),var(--p1)}
+.zone.esc::before{content:"";position:absolute;inset-inline-start:0;top:0;bottom:0;width:4px;background:var(--amber)}
+.zone.emg{border-color:rgba(255,68,88,.55);background:linear-gradient(90deg,rgba(255,68,88,.13),transparent 70%),var(--p1)}
+.zone.emg::before{content:"";position:absolute;inset-inline-start:0;top:0;bottom:0;width:4px;background:var(--red)}
+.zt i{background:var(--cyan);color:#04121c}
+.zt u{text-decoration:none;font-size:11px;font-weight:900;border-radius:6px;padding:2px 7px}.zt u.esc{background:var(--amber);color:#2a1a00}.zt u.emg{background:var(--red);color:#fff}
+.sv{font-style:normal;font-size:10px;font-weight:900;border-radius:5px;padding:1px 6px;margin-inline-start:4px}.sv.s3{background:var(--amber);color:#2a1a00}.sv.s4{background:var(--red);color:#fff}.sv.s2,.sv.s1{display:none}
+.nav .n.r.calm{background:var(--cyan);color:#04121c}.nav .n.r.esc{background:var(--amber);color:#2a1a00}
 
 </style>
 </head>
@@ -833,7 +870,7 @@ Return ONLY JSON, Hebrew text, neutral and factual:
     $("clock").textContent = lr ? `סריקה ${ago(lr.finished_at)}` : "ממתין לסריקה";
     const live = ((S.data && S.data.wire) || []).filter((x) => now() - Date.parse(x.p) < 30 * 60000).length;
     $("liveN").textContent = live; $("liveN").classList.toggle("hide", !live);
-    if (S.war) { const [wn] = warTotal(); $("warN").textContent = wn > 99 ? "99+" : wn; $("warN").classList.toggle("hide", !wn); }
+    if (S.war) { const [wn, , wl] = warTotal(); const e = $("warN"); e.textContent = wn > 99 ? "99+" : wn; e.classList.toggle("hide", !wn); e.classList.toggle("calm", wl <= 2); e.classList.toggle("esc", wl === 3); }
     const showChips = S.tab === "home" || S.tab === "live" || S.tab === "time";
     $("chips").classList.toggle("hide", !showChips || !S.filtersOpen);
     $("chips").innerHTML = ACTORS.map((a) => `<button class="chip ${S.actor === a[0] ? "on" : ""}" data-actor="${esc(a[0])}">${esc(a[0])}</button>`).join("");
@@ -863,11 +900,22 @@ Return ONLY JSON, Hebrew text, neutral and factual:
     usa:     { n: "ארה״ב", sub: "וושינגטון", lab: [868, 62], al: "c", cc: [], off: true },
   };
   const CAPS = [["tehran", "טהרן"], ["beirut", "ביירות"], ["damascus", "דמשק"], ["sanaa", "צנעא"], ["baghdad", "בגדאד"], ["cairo", "קהיר"], ["ankara", "אנקרה"], ["doha", "דוחא"], ["riyadh", "ריאד"]];
+  // severity from the headline: 4 emergency (actual fire), 3 sharp escalation, 2 tension, 1 background/analysis
+  const SEV4 = /שיגור|שוגר|שיגרו|שיגר |ירי טילים|ירי רקטות|מטח|אזעק|יירוט|יורט|יירטו|נפילת (טיל|רקטה|כטב)|נפילה ב|פגיעה ישירה|נורו (טילים|רקטות)|(טיל|טילים|רקטה|רקטות|כטב"ם|כטב״ם) (שוגר|נורה|נורו|פגע|נפל)|\b(missiles?|rockets?|drones?|barrage)\b.{0,30}\b(fired|launched|hit|struck)\b|\bsirens?\b|\bintercept(ed|ion|s)?\b|direct hit/i;
+  const SEV4B = /(נרצח|נרצחו|נהרג|נהרגו|הרוגים|רבי נפגעים|פצועים קשה).{0,40}(פיגוע|ירי|טיל|רקט|תקיפ)|(פיגוע|ירי|טיל|רקט|תקיפ).{0,40}(נרצח|נרצחו|נהרג|נהרגו|הרוגים|רבי נפגעים)|\b(killed|dead)\b.{0,40}\b(attack|strike|missile|rocket)\b/i;
+  const SEV3 = /איום|איים|מאיים|מאיימת|מאיימים|תקיפ|תקף|תקפה|תקפו|לתקוף|יתקוף|מתקפ|פיצוץ|פיצוצים|חיסול|חוסל|חיסל|כוננות|גיוס מילואים|מצור|הסלמה|הסלים|נערכ|אולטימטום|פלישה|הפצצ|הופצצ|פשיטה|פשט|פיגוע|דקירה|דריסה|ירי |\b(threat(en)?s?|warns?|strikes?|struck|attack(s|ed)?|explosions?|blasts?|assassinat\w*|alert|mobiliz\w*|blockade|escalat\w*|raids?|invasion|ultimatum)\b/i;
+  const MAYBE = /עשוי|עשויה|עשויים|עשויות|עלול|עלולה|עלולים|עלולות|יכול|יכולה|יכולות|מסוגל|\b(could|may|might|capable)\b/i;
+  const CALM = /\?|האם |פרשנות|ניתוח|דעה:|טור:|מדוע|למה |מאחורי הקלעים|\b(analysis|opinion|why|how|explainer)\b/i;
+  const sevOf = (it) => { if (it._s != null) return it._s; const t = it.t || ""; let s = SEV4.test(t) || SEV4B.test(t) ? 4 : SEV3.test(t) ? 3 : 2; if (s === 4 && MAYBE.test(t)) s = 3; if (CALM.test(t)) s = s >= 3 ? 2 : 1; return (it._s = s); };
+  // an arena's level fades with time: emergency counts for 3h, escalation for 8h, then the item is just routine
+  const lvOf = (it) => { const age = (now() - Date.parse(it.f)) / 3600e3, s = sevOf(it); return s === 4 && age > 3 ? (age > 8 ? 2 : 3) : s === 3 && age > 8 ? 2 : s; };
+  const LV = { 1: ["רקע", "calm"], 2: ["שגרה", "calm"], 3: ["הסלמה", "esc"], 4: ["חירום", "emg"] };
   const warSeen = () => { let s = store.get("warSeen", null); if (!s) { s = {}; const t = Date.now() - 6 * 3600e3; for (const k in ARENA) s[k] = t; store.set("warSeen", s); } return s; };
   function warStats(){
     const W = S.war, seen = warSeen(), st = {};
-    for (const k in ARENA) st[k] = { all: [], fresh: 0, last: null };
-    for (const it of (W && W.items) || []) for (const a of it.a || []) { const x = st[a]; if (!x) continue; x.all.push(it); if (Date.parse(it.f) - S.skew > (seen[a] || 0)) x.fresh++; if (!x.last) x.last = it; }
+    for (const k in ARENA) st[k] = { all: [], fresh: 0, last: null, lv: 0, n3: 0 };
+    for (const it of (W && W.items) || []) for (const a of it.a || []) { const x = st[a]; if (!x) continue; x.all.push(it); if (Date.parse(it.f) - S.skew > (seen[a] || 0)) x.fresh++; if (!x.last) x.last = it; const l = lvOf(it), age = (now() - Date.parse(it.f)) / 3600e3; if (l >= 3) x.n3++; x.lv = Math.max(x.lv, l === 3 && age > 3 ? 2 : l); }
+    for (const k in st) if (st[k].lv < 3 && st[k].n3 >= 2) st[k].lv = 3;
     return st;
   }
   async function loadWar(){
@@ -876,31 +924,35 @@ Return ONLY JSON, Hebrew text, neutral and factual:
     catch (e) { console.warn("war", e); }
     finally { S.warLoading = false; }
   }
-  function warTotal(){ const st = warStats(); let n = 0, z = 0; for (const k in st) if (st[k].fresh) { n += st[k].fresh; z++; } return [n, z]; }
+  function warTotal(){ const st = warStats(); let n = 0, z = 0, lv = 0; for (const k in st) { if (st[k].fresh) { n += st[k].fresh; z++; } lv = Math.max(lv, st[k].lv); } return [n, z, lv]; }
   function viewWar(){
     if (!S.war) { loadWar(); return `<div class="sk" style="height:420px;border-radius:22px"></div><div class="sk" style="height:80px;margin-top:12px"></div>`; }
-    const st = warStats(), [tot, zones] = warTotal(), G = WARGEO, P = G.pts;
-    const fill = {}; for (const k in ARENA) for (const c of ARENA[k].cc) fill[c] = st[k].fresh ? "hot" : st[k].all.length ? "warm" : "cold";
+    const st = warStats(), [tot, zones, glv] = warTotal(), G = WARGEO, P = G.pts;
+    const cls = (s) => s.lv >= 4 ? "emg" : s.lv === 3 ? "esc" : s.all.length ? "calm" : "cold";
+    const fill = {}; for (const k in ARENA) for (const c of ARENA[k].cc) fill[c] = cls(st[k]);
     const land = Object.entries(G.c).map(([c, d]) => `<path d="${d}" class="${c === "ISR" ? "isr" : fill[c] ? "ar " + fill[c] : "land"}"/>`).join("");
     const rings = [500, 1000, 1500, 2000].map((km) => `<path d="${G.rings[km]}" class="rng"/><text x="${G.rings[km + "_lbl"][0]}" y="${G.rings[km + "_lbl"][1]}" class="rngt">${km} ק״מ</text>`).join("");
     const caps = CAPS.map(([k, n]) => `<circle cx="${P[k][0]}" cy="${P[k][1]}" r="3.2" class="cap"/><text x="${P[k][0] + 7}" y="${P[k][1] - 6}" class="capt">${n}</text>`).join("");
     const C = P.il;
     let arcs = "", dots = "", lines = "", pills = "";
     for (const [k, A] of Object.entries(ARENA)) {
-      const s = st[k], hot = s.fresh > 0, pt = A.off ? null : P[k];
+      const s = st[k], c = cls(s), hot = s.fresh > 0, pt = A.off ? null : P[k];
       if (pt) {
-        if (hot && k !== "wb" && k !== "gaza") { const mx = (pt[0] + C[0]) / 2, my = (pt[1] + C[1]) / 2 - Math.hypot(pt[0] - C[0], pt[1] - C[1]) * 0.28; arcs += `<path d="M${pt[0]},${pt[1]} Q${mx},${my} ${C[0]},${C[1]}" class="arc"/>`; }
-        dots += `<g class="hs ${hot ? "hot" : s.all.length ? "warm" : ""}"><circle cx="${pt[0]}" cy="${pt[1]}" r="16" class="pulse" style="transform-origin:${pt[0]}px ${pt[1]}px"/><circle cx="${pt[0]}" cy="${pt[1]}" r="6.5" class="core"/></g>`;
-        lines += `<path d="M${pt[0]},${pt[1]} L${A.lab[0]},${A.lab[1]}" class="ld ${hot ? "hot" : ""}"/>`;
+        if (s.lv >= 3 && k !== "wb" && k !== "gaza") { const mx = (pt[0] + C[0]) / 2, my = (pt[1] + C[1]) / 2 - Math.hypot(pt[0] - C[0], pt[1] - C[1]) * 0.28; arcs += `<path d="M${pt[0]},${pt[1]} Q${mx},${my} ${C[0]},${C[1]}" class="arc ${c}"/>`; }
+        dots += `<g class="hs ${c} ${hot ? "unseen" : ""}"><circle cx="${pt[0]}" cy="${pt[1]}" r="16" class="pulse" style="transform-origin:${pt[0]}px ${pt[1]}px"/><circle cx="${pt[0]}" cy="${pt[1]}" r="6.5" class="core"/></g>`;
+        lines += `<path d="M${pt[0]},${pt[1]} L${A.lab[0]},${A.lab[1]}" class="ld ${c}"/>`;
       }
       const x = A.lab[0] / G.W * 100, y = A.lab[1] / G.H * 100;
-      pills += `<button class="pill ${A.al} ${hot ? "hot" : s.all.length ? "" : "mute"} ${A.off ? "off" : ""}" data-arena="${k}" style="left:${x}%;top:${y}%"><b>${A.s || A.n}</b>${hot ? `<i>${s.fresh}</i>` : s.all.length ? `<em>${s.all.length}</em>` : ""}</button>`;
+      pills += `<button class="pill ${A.al} ${c} ${hot ? "unseen" : ""} ${s.all.length ? "" : "mute"} ${A.off ? "off" : ""}" data-arena="${k}" style="left:${x}%;top:${y}%"><b>${A.s || A.n}</b>${hot ? `<i>${s.fresh}</i>` : s.all.length ? `<em>${s.all.length}</em>` : ""}</button>`;
     }
     const recent = ((S.war && S.war.items) || []).slice(0, 12);
     const seen = warSeen();
-    const tick = recent.map((it) => { const a = (it.a || [])[0]; return `<span data-arena="${a}"><b>${esc(ARENA[a] ? ARENA[a].n : "")}</b>${esc(it.t)}<small>${hhmm(it.f)}</small></span>`; }).join("");
-    let h = `<div class="wr-head"><div><div class="wr-t"><span class="live"></span>חדר מלחמה</div><div class="wr-s">${tot ? `<b>${tot}</b> עדכונים שלא ראית · ${zones} זירות` : "אין עדכונים חדשים · הכול נקרא"}</div></div><div class="wr-clock" id="wrClock">${hhmm(new Date(now()).toISOString())}</div></div>`;
-    if (recent.length) h += `<div class="tick"><div class="tk-in">${tick}${tick}</div></div>`;
+    const tick = recent.map((it) => { const a = (it.a || [])[0]; return `<span data-arena="${a}"><b class="${LV[lvOf(it)][1]}">${esc(ARENA[a] ? ARENA[a].n : "")}</b>${esc(it.t)}<small>${hhmm(it.f)}</small></span>`; }).join("");
+    const gname = glv >= 4 ? "חירום" : glv === 3 ? "הסלמה" : "שגרה יחסית", gc = glv >= 4 ? "emg" : glv === 3 ? "esc" : "calm";
+    const emg = glv >= 4 ? Object.keys(ARENA).filter((k) => st[k].lv >= 4).map((k) => ARENA[k].n).join(" · ") : "";
+    let h = `<div class="wr-head"><div><div class="wr-t"><span class="live ${gc}"></span>חדר מלחמה</div><div class="wr-s"><span class="lvchip ${gc}">${gname}</span>${tot ? `<b>${tot}</b> עדכונים שלא ראית` : "הכול נקרא"}</div></div><div class="wr-clock" id="wrClock">${hhmm(new Date(now()).toISOString())}</div></div>`;
+    if (emg) h += `<div class="emgbar">⚠ חירום · ${esc(emg)}</div>`;
+    if (recent.length) h += `<div class="tick ${gc}"><div class="tk-in">${tick}${tick}</div></div>`;
     h += `<div class="wmap"><svg viewBox="0 0 ${G.W} ${G.H}" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
       <defs>
         <radialGradient id="wsea" cx="28%" cy="38%" r="80%"><stop offset="0" stop-color="#0d1a2e"/><stop offset="1" stop-color="#05080e"/></radialGradient>
@@ -915,12 +967,12 @@ Return ONLY JSON, Hebrew text, neutral and factual:
       <g class="sweep" style="transform-origin:${C[0]}px ${C[1]}px"><path d="M${C[0]},${C[1]} L${C[0] + 900},${C[1]} A900,900 0 0,0 ${C[0] + 900 * Math.cos(0.6)},${C[1] - 900 * Math.sin(0.6)} Z" fill="url(#wsw)"/></g>
       ${caps}${arcs}${lines}${dots}
       <g filter="url(#wgl)"><circle cx="${C[0]}" cy="${C[1]}" r="7" class="ilc"/></g>
-    </svg>${pills}</div><div class="wcap"><span><i class="kh"></i>עדכון שעוד לא ראית</span><span><i class="kw"></i>נקרא</span><span>· לחיצה על זירה פותחת את הדיווחים</span></div>`;
-    const order = Object.keys(ARENA).sort((a, b) => (st[b].fresh - st[a].fresh) || ((st[b].last ? Date.parse(st[b].last.f) : 0) - (st[a].last ? Date.parse(st[a].last.f) : 0)));
+    </svg>${pills}</div><div class="wcap"><span><i class="k2"></i>שגרה</span><span><i class="k3"></i>הסלמה</span><span><i class="k4"></i>חירום · ירי בפועל</span><span><i class="ku"></i>מספר = עדכונים שלא ראית</span></div>`;
+    const order = Object.keys(ARENA).sort((a, b) => (st[b].lv - st[a].lv) || (st[b].fresh - st[a].fresh) || ((st[b].last ? Date.parse(st[b].last.f) : 0) - (st[a].last ? Date.parse(st[a].last.f) : 0)));
     h += `<div class="h">זירות<span class="c">· לחיצה מסמנת כנקרא</span></div><div class="zones">`;
     for (const k of order) {
       const A = ARENA[k], s = st[k]; if (!s.all.length) continue;
-      h += `<button class="zone ${s.fresh ? "hot" : ""}" data-arena="${k}"><div class="zt"><b>${A.n}</b><span>${A.sub}</span>${s.fresh ? `<i>${s.fresh} חדשים</i>` : `<em>${s.all.length} ב־36 ש׳</em>`}</div>
+      h += `<button class="zone ${cls(s)}" data-arena="${k}"><div class="zt"><b>${A.n}</b><span>${A.sub}</span>${s.lv >= 3 ? `<u class="${cls(s)}">${LV[s.lv][0]}</u>` : ""}${s.fresh ? `<i>${s.fresh} חדשים</i>` : `<em>${s.all.length} ב־36 ש׳</em>`}</div>
         <div class="zl" dir="auto">${esc(s.last.t)}</div><div class="zm">${logo(s.last.o)}<span>${esc(s.last.o)}</span><span>·</span><span>${ago(s.last.f)}</span></div></button>`;
     }
     h += `</div><div class="wnote">מבוסס על אותם כלי תקשורת, ידיעות על ביטחון ועל הזירות סביב ישראל · מתעדכן כל 3 דקות</div>`;
@@ -939,8 +991,8 @@ Return ONLY JSON, Hebrew text, neutral and factual:
   function openArena(k){
     const A = ARENA[k]; if (!A) return; const st = warStats()[k]; const seen = warSeen(); const since = seen[k] || 0;
     const groups = groupWar(st.all);
-    $("panel").innerHTML = `<div class="grab"></div><div class="dh"><div class="kk"><span class="fl ${st.fresh ? "brk" : "nwq"}">${st.fresh ? `${st.fresh} חדשים` : "אין חדש"}</span><span>${A.sub}</span><span>·</span><span>${st.all.length} דיווחים ב־36 שעות</span></div><h2>${A.n}</h2></div>
-      <div class="arts">${groups.map((g) => { const it = g.top, isNew = Date.parse(it.f) - S.skew > since; return `<a class="ar war ${isNew ? "isnew" : ""}" href="${esc(it.u)}" target="_blank" rel="noopener"><span class="o">${logo(it.o)}<span>${esc(it.o)}</span>${isNew ? `<i class="nd">חדש</i>` : ""}</span><span class="t" dir="auto">${esc(it.t)}</span>${it.d ? `<span class="d" dir="auto">${esc(it.d)}</span>` : ""}${g.more.length ? `<span class="also">גם ב: ${g.more.slice(0, 4).map((m) => `${logo(m.o)}`).join("")} ${g.more.length > 4 ? `+${g.more.length - 4}` : ""}</span>` : ""}<span class="tm">${hhmm(it.f)}</span></a>`; }).join("") || `<div class="empty">אין דיווחים מהזירה הזו ב־36 השעות האחרונות.</div>`}</div>`;
+    $("panel").innerHTML = `<div class="grab"></div><div class="dh"><div class="kk">${st.lv >= 3 ? `<span class="fl ${st.lv >= 4 ? "brk" : "hot"}">${LV[st.lv][0]}</span>` : ""}<span class="fl nwq">${st.fresh ? `${st.fresh} חדשים` : "אין חדש"}</span><span>${A.sub}</span><span>·</span><span>${st.all.length} דיווחים ב־36 שעות</span></div><h2>${A.n}</h2></div>
+      <div class="arts">${groups.map((g) => { const it = g.top, isNew = Date.parse(it.f) - S.skew > since; return `<a class="ar war ${isNew ? "isnew" : ""}" href="${esc(it.u)}" target="_blank" rel="noopener"><span class="o">${logo(it.o)}<span>${esc(it.o)}</span>${isNew ? `<i class="nd">חדש</i>` : ""}${sevOf(it) >= 3 ? `<i class="sv s${lvOf(it)}">${LV[lvOf(it)][0]}</i>` : ""}</span><span class="t" dir="auto">${esc(it.t)}</span>${it.d ? `<span class="d" dir="auto">${esc(it.d)}</span>` : ""}${g.more.length ? `<span class="also">גם ב: ${g.more.slice(0, 4).map((m) => `${logo(m.o)}`).join("")} ${g.more.length > 4 ? `+${g.more.length - 4}` : ""}</span>` : ""}<span class="tm">${hhmm(it.f)}</span></a>`; }).join("") || `<div class="empty">אין דיווחים מהזירה הזו ב־36 השעות האחרונות.</div>`}</div>`;
     $("sheet").classList.add("open"); $("panel").scrollTop = 0;
     seen[k] = Date.now(); store.set("warSeen", seen); renderChrome();
     if (S.tab === "war") render();

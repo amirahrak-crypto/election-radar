@@ -715,13 +715,14 @@ Return ONLY JSON, Hebrew text, neutral and factual:
     const seg = `<div class="seg">${[["how","איך זה עובד"],["src","מקורות"],["set","התראות"]].map(([k, l]) => `<button data-seg="${k}" class="${k === tab ? "on" : ""}">${l}</button>`).join("")}</div>`;
     let body = "";
     if (tab === "how") body = `<div class="doc">
+      <h4>📲 שמירה כאפליקציה</h4><p>${installHelp()}</p>${deferredInstall ? `<button class="primary" id="doInstall" style="width:100%">התקן עכשיו</button>` : ""}
       <h4>מה זה</h4><p>חדר מצב לחילופי השלטון: איפה עומד תהליך הרכבת הממשלה, מה קרה בשעות האחרונות ומה באמת חשוב — מכל כלי התקשורת, במקום אחד.</p>
-      <h4>מאיפה הנתונים</h4><p>כל <b>3 דקות</b> שרת בענן קורא אתרי חדשות ישראליים וזרים, Google News וערוצי טלגרם של כלי תקשורת. הדף מתרענן כל דקה.</p>
+      <h4>מאיפה הנתונים</h4><p>כל <b>3 דקות</b> שרת בענן קורא אתרי חדשות ישראליים וזרים ו־Google News. הדף מתרענן כל דקה.</p>
       <h4>מה Claude עושה</h4><p>מסנן מה שאינו פוליטי, מאחד דיווחים על אותו אירוע (גם עברית ואנגלית), כותב כותרת וסיכום ניטרליים, נותן ציון חשיבות, ומעדכן את לוח המצב: מי מחזיק במנדט, כמה ימים נותרו, מי ממליץ על מי ומי במו״מ. כל קביעה בלוח מקושרת לידיעה שעליה היא מבוססת. הנתונים מתעדכנים אוטומטית.</p>
       <h4>המספר ליד כל סיפור (1–10)</h4><p><b>10</b> הקמת ממשלה / הטלת מנדט / בחירות חוזרות · <b>8–9</b> המלצה רשמית, הסכם נחתם או קרס, השבעת הכנסת · <b>6–7</b> מו״מ מהותי, אולטימטום, החלטה משפטית חשובה · <b>4–5</b> הצהרות · <b>1–3</b> פרשנות. לפי ההשלכה בפועל — לא לפי מי מרוויח.</p>
       <h4>הסדר ברשימה</h4><p>חשיבות ×10 + כמה כלי תקשורת שונים מדווחים (סוכנויות וזרים שוקלים יותר) + קצב בחצי השעה האחרונה + מבזק טרי + סיקור בעולם + הדירוג שלך, וכל זה <b>דועך בחצי כל שעתיים וחצי</b> בלי דיווח חדש.</p>
       <h4>הדירוג שלך</h4><p>▲/▼ בכל סיפור מזיזים אותו מיד, והתיקונים נשלחים ל־Claude כדוגמאות לכיול.</p>
-      <h4>מגבלות</h4><p>כאן, ערוץ 14 ו־Times of Israel חוסמים קריאה ישירה ונכנסים דרך Google News וטלגרם. לוח המצב הוא חילוץ אוטומטי מהתקשורת, לא נתון רשמי. ההתראות מופיעות כשהדף פתוח.</p></div>`;
+      <h4>מגבלות</h4><p>כאן, ערוץ 14 ו־Times of Israel חוסמים קריאה ישירה ונכנסים דרך Google News. לוח המצב הוא חילוץ אוטומטי מהתקשורת, לא נתון רשמי. ההתראות מופיעות כשהדף פתוח.</p></div>`;
     if (tab === "set") body = `<div class="row"><span>התראה על סיפור בחשיבות</span><select id="thr">${[7,8,9,11].map((v) => `<option value="${v}" ${S.thr === v ? "selected" : ""}>${v === 11 ? "כבוי" : v + " ומעלה"}</option>`).join("")}</select></div>
       <div class="row"><span>התראה על סיפור שמתפוצץ (4+ דיווחים בחצי שעה)</span><button class="tg ${S.vel ? "on" : ""}" id="tVel"></button></div>
       <div class="row"><span>צליל ורטט</span><button class="tg ${S.snd ? "on" : ""}" id="tSnd"></button></div>
@@ -757,6 +758,7 @@ Return ONLY JSON, Hebrew text, neutral and factual:
     if (e.target.id === "tVel") { S.vel = !S.vel; store.set("vel", S.vel); openMenu("set"); }
     if (e.target.id === "tSnd") { S.snd = !S.snd; store.set("snd", S.snd); unlock(); if (S.snd) beep(); openMenu("set"); }
     if (e.target.id === "tAI") { S.aiOn = !S.aiOn; store.set("aiOn", S.aiOn); openMenu("set"); if (S.aiOn) aiTick(true); }
+    if (e.target.id === "doInstall" && deferredInstall) { deferredInstall.prompt(); deferredInstall = null; $("sheet").classList.remove("open"); return; }
     if (e.target.id === "forceBrief") { $("sheet").classList.remove("open"); maybeBrief(true); }
   });
   $("sheet").addEventListener("change", (e) => { if (e.target.id === "thr") { S.thr = +e.target.value; store.set("thr", S.thr); } });
@@ -766,17 +768,29 @@ Return ONLY JSON, Hebrew text, neutral and factual:
 
   // ---------- install as app ----------
   try { if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js"); } catch {}
+  function installHelp(){
+    const ua = navigator.userAgent;
+    const ios = /iphone|ipad|ipod/i.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+    const android = /android/i.test(ua);
+    const inApp = /FBAN|FBAV|Instagram|Line\/|WhatsApp|Telegram|; wv\)/i.test(ua);
+    if (inApp) return android ? `<b>פתח קודם בדפדפן:</b> ⋮ למעלה ← <b>"פתח ב-Chrome"</b>, ואז ⋮ ← <b>"הוסף למסך הבית"</b>` : `<b>פתח קודם בדפדפן:</b> לחץ על סמל הדפדפן / <b>"פתח ב-Safari"</b>, ואז <b>שתף ⬆︎ ← "הוסף למסך הבית"</b>`;
+    if (ios && /CriOS/i.test(ua)) return `<b>שמור כאפליקציה ב-Chrome:</b> לחץ על <b>שתף ⬆︎</b> בשורת הכתובת למעלה ← גלול למטה ← <b>"הוסף למסך הבית"</b>`;
+    if (ios && /EdgiOS|FxiOS/i.test(ua)) return `<b>שמור כאפליקציה:</b> לחץ על <b>שתף ⬆︎</b> ← <b>"הוסף למסך הבית"</b>. אם אין אפשרות כזו, פתח את הקישור ב-Safari`;
+    if (ios) return `<b>שמור כאפליקציה:</b> לחץ על <b>שתף ⬆︎</b> (או <b>⋯</b> ← שתף) ← <b>"הוסף למסך הבית"</b>, והשאר את "פתח כאפליקציה" דלוק`;
+    if (android) return `<b>שמור כאפליקציה:</b> בתפריט <b>⋮</b> של Chrome בחר <b>"התקן אפליקציה"</b> או <b>"הוסף למסך הבית"</b>`;
+    return `<b>במחשב:</b> בשורת הכתובת של Chrome לחץ על סמל ההתקנה ⊕, או ⋮ ← "שמירה ושיתוף" ← "התקנת הדף כאפליקציה"`;
+  }
+  let deferredInstall = null;
   (function(){
     const standalone = window.matchMedia("(display-mode: standalone)").matches || navigator.standalone;
-    const ios = /iphone|ipad|ipod/i.test(navigator.userAgent); const mobile = /android|iphone|ipad|ipod/i.test(navigator.userAgent);
-    if (standalone || !mobile || store.get("installDismissed", 0) > Date.now() - 3 * 864e5) return;
-    let deferred = null; const box = $("install"), txt = $("installTxt"), btn = $("installBtn");
+    const mobile = /android|iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+    const box = $("install"), txt = $("installTxt"), btn = $("installBtn");
     const show = (html, withBtn) => { txt.innerHTML = html; btn.classList.toggle("hide", !withBtn); box.classList.remove("hide"); };
-    if (ios) show(`<b>שמור כאפליקציה:</b> לחץ על <b>שתף</b> <span style="font-size:15px">⬆︎</span> למטה ואז <b>"הוסף למסך הבית"</b>`, false);
-    window.addEventListener("beforeinstallprompt", (e) => { e.preventDefault(); deferred = e; show(`<b>שמור כאפליקציה</b> על מסך הבית — נפתח במסך מלא ומתעדכן לבד`, true); });
-    btn.onclick = async () => { if (!deferred) return; deferred.prompt(); try { await deferred.userChoice; } catch {} deferred = null; box.classList.add("hide"); };
+    window.addEventListener("beforeinstallprompt", (e) => { e.preventDefault(); deferredInstall = e; if (!standalone && store.get("installDismissed", 0) < Date.now() - 3 * 864e5) show(`<b>שמור כאפליקציה</b> על מסך הבית — נפתח במסך מלא ומתעדכן לבד`, true); });
+    btn.onclick = async () => { if (!deferredInstall) return; deferredInstall.prompt(); try { await deferredInstall.userChoice; } catch {} deferredInstall = null; box.classList.add("hide"); };
     $("installX").onclick = () => { box.classList.add("hide"); store.set("installDismissed", Date.now()); };
-    if (!ios) setTimeout(() => { if (!deferred && box.classList.contains("hide")) show(`<b>שמור כאפליקציה:</b> בתפריט הדפדפן <b>⋮</b> בחר <b>"הוסף למסך הבית"</b>`, false); }, 4000);
+    if (standalone || !mobile || store.get("installDismissed", 0) > Date.now() - 3 * 864e5) return;
+    setTimeout(() => { if (box.classList.contains("hide")) show(installHelp(), false); }, /android/i.test(navigator.userAgent) ? 3500 : 800);
   })();
   // ---------- boot (public read-only) ----------
   S.mcp = {}; S.sample = null;

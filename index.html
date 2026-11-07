@@ -504,10 +504,48 @@ main.wrap{will-change:transform}
 .wS .fx,.wA .fx{display:flex;align-items:center;gap:7px;margin-top:9px;flex-wrap:wrap}
 .wA .stamp{background:var(--amber);color:#2a1a00;box-shadow:none}
 
+/* compact tiers (about a third of the earlier height) */
+.tS{padding:12px 14px 12px;border-radius:20px;margin-bottom:8px}
+.tS::before{border-radius:22px}
+.tS .wm{font-size:110px;bottom:-22px;letter-spacing:-5px}
+.tS h2{font-size:19px;line-height:1.3;margin:7px 0 4px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.tS .why{font-size:13px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.tS .ft{margin-top:9px;gap:7px;font-size:12px;color:#ffe3e7;font-weight:700}
+.tS .stamp{font-size:10.5px;padding:2px 7px}
+.tA{padding:10px 13px 10px;border-radius:16px;margin-bottom:8px}
+.tA::after{top:10px;bottom:10px}
+.tt3{font-size:16px;line-height:1.35;font-weight:800;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.sm3{font-size:12.5px;color:var(--muted);line-height:1.4;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mf{display:flex;align-items:center;gap:6px;margin-top:7px;font-size:11.5px;color:var(--muted);font-weight:700;min-width:0}
+.mf .lvl{font-size:10px;padding:2px 6px}
+.mf .lg{width:18px;height:18px;border-radius:6px;font-size:9.5px}
+.mf .cnt{white-space:nowrap}
+.mf .ttm,.tS .ttm{font-size:11px}
+.mf .chp.s{padding:1px 6px;font-size:10.5px}
+.tB{padding:9px 12px;gap:9px}
+.tB .tt2{font-size:14.5px;line-height:1.38;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.tB .mf{margin-top:5px}
+.tB .side{width:4px}
+.tC{padding:8px 12px}
+.wS{padding:10px 12px;margin-top:8px}.wA{padding:9px 12px;margin-top:8px}
+.wS .t{font-size:16px;margin:5px 0 2px}.wA .t{font-size:15px;margin:5px 0 2px}
+.wS .d,.wA .d{-webkit-line-clamp:1}
+.wS .fx,.wA .fx{margin-top:6px}
+.ar.war{padding:8px 0}.ar.war .d{-webkit-line-clamp:1}
+.tA{padding:9px 12px 9px}
+.tt3{font-size:15.5px;line-height:1.34}
+.tA .mf{margin-top:6px}
+.tS h2{-webkit-line-clamp:2;font-size:18.5px}
+.tS .why{-webkit-line-clamp:1}
+.nw{padding:9px 11px;gap:4px}
+.nw .tt{font-size:14px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.nw .ft .lg{width:18px;height:18px;border-radius:6px;font-size:9.5px}.ar.war .d{-webkit-line-clamp:1}
+
 .pwrap{position:relative;width:100%;max-width:760px}
 .xbtn{position:absolute;top:10px;left:12px;z-index:3;width:34px;height:34px;border-radius:50%;border:1px solid var(--line2);background:rgba(29,37,51,.92);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);color:var(--ink);font-size:15px;font-weight:900;display:grid;place-items:center;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.35)}
 .xbtn:active{transform:scale(.92)}
 body.lock{overflow:hidden}
+.nav .n.dot{min-width:8px;width:8px;height:8px;padding:0;top:7px;left:calc(50% - 16px)}
 </style>
 </head>
 <body>
@@ -533,9 +571,9 @@ body.lock{overflow:hidden}
 <nav class="nav"><div class="wrap" id="nav">
   <button data-tab="home" class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="2"/><rect x="14" y="3" width="7" height="5" rx="2"/><rect x="14" y="12" width="7" height="9" rx="2"/><rect x="3" y="16" width="7" height="5" rx="2"/></svg>מצב</button>
   <button data-tab="live"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h11M4 18h7"/><circle cx="19" cy="17" r="3"/></svg>חי<span class="n hide" id="liveN"></span></button>
-  <button data-tab="war"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M1 12h4M19 12h4"/></svg>חדר מלחמה<span class="n r hide" id="warN"></span></button>
   <button data-tab="map"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 21h18M5 21V10M10 21V10M14 21V10M19 21V10M2 10l10-6 10 6"/></svg>מפה פוליטית</button>
   <button data-tab="time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>ציר זמן</button>
+  <button data-tab="war"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M1 12h4M19 12h4"/></svg>חדר מלחמה<span class="n r hide" id="warN"></span></button>
 </div></nav>
 
 <div class="install hide" id="install"><img src="apple-touch-icon.png" alt=""><div style="flex:1" id="installTxt"></div><button class="act hide" id="installBtn">התקן</button><button class="cl" id="installX" aria-label="סגור">✕</button></div>
@@ -934,7 +972,7 @@ Return ONLY JSON, Hebrew text, neutral and factual:
     $("clock").textContent = lr ? `סריקה ${ago(lr.finished_at)}` : "ממתין לסריקה";
     const live = ((S.data && S.data.wire) || []).filter((x) => now() - Date.parse(x.p) < 30 * 60000).length;
     $("liveN").textContent = live; $("liveN").classList.toggle("hide", !live);
-    if (S.war) { const [wn, , wl] = warTotal(); const e = $("warN"); e.textContent = wn > 99 ? "99+" : wn; e.classList.toggle("hide", !wn); e.classList.toggle("calm", wl <= 2); e.classList.toggle("esc", wl === 3); }
+    if (S.war) { const [wn, , wl] = warTotal(); const e = $("warN"); const loud = wl >= 3; e.textContent = loud ? (wn > 99 ? "99+" : wn || "!") : ""; e.classList.toggle("hide", !wn && !loud); e.classList.toggle("dot", !loud); e.classList.toggle("calm", !loud); e.classList.toggle("esc", wl === 3); }
     const showChips = S.tab === "home" || S.tab === "live" || S.tab === "time";
     $("chips").classList.toggle("hide", !showChips || !S.filtersOpen);
     $("chips").innerHTML = ACTORS.map((a) => `<button class="chip ${S.actor === a[0] ? "on" : ""}" data-actor="${esc(a[0])}">${esc(a[0])}</button>`).join("");
@@ -969,21 +1007,37 @@ Return ONLY JSON, Hebrew text, neutral and factual:
     usa:     { n: "ארה״ב", sub: "וושינגטון", lab: [868, 62], al: "c", cc: [], off: true },
   };
   const CAPS = [["tehran", "טהרן"], ["beirut", "ביירות"], ["damascus", "דמשק"], ["sanaa", "צנעא"], ["baghdad", "בגדאד"], ["cairo", "קהיר"], ["ankara", "אנקרה"], ["doha", "דוחא"], ["riyadh", "ריאד"]];
-  // severity from the headline: 4 emergency (actual fire), 3 sharp escalation, 2 tension, 1 background/analysis
-  const SEV4 = /שיגור|שוגר|שיגרו|שיגר |ירי טילים|ירי רקטות|מטח|אזעק|יירוט|יורט|יירטו|נפילת (טיל|רקטה|כטב)|נפילה ב|פגיעה ישירה|נורו (טילים|רקטות)|(טיל|טילים|רקטה|רקטות|כטב"ם|כטב״ם) (שוגר|נורה|נורו|פגע|נפל)|\b(missiles?|rockets?|drones?|barrage)\b.{0,30}\b(fired|launched|hit|struck)\b|\bsirens?\b|\bintercept(ed|ion|s)?\b|direct hit/i;
-  const SEV4B = /(נרצח|נרצחו|נהרג|נהרגו|הרוגים|רבי נפגעים|פצועים קשה).{0,40}(פיגוע|ירי|טיל|רקט|תקיפ)|(פיגוע|ירי|טיל|רקט|תקיפ).{0,40}(נרצח|נרצחו|נהרג|נהרגו|הרוגים|רבי נפגעים)|\b(killed|dead)\b.{0,40}\b(attack|strike|missile|rocket)\b/i;
-  const SEV3 = /איום|איים|מאיים|מאיימת|מאיימים|תקיפ|תקף|תקפה|תקפו|לתקוף|יתקוף|מתקפ|פיצוץ|פיצוצים|חיסול|חוסל|חיסל|כוננות|גיוס מילואים|מצור|הסלמה|הסלים|נערכ|אולטימטום|פלישה|הפצצ|הופצצ|פשיטה|פשט|פיגוע|דקירה|דריסה|ירי |\b(threat(en)?s?|warns?|strikes?|struck|attack(s|ed)?|explosions?|blasts?|assassinat\w*|alert|mobiliz\w*|blockade|escalat\w*|raids?|invasion|ultimatum)\b/i;
+  // Severity is measured against the post-2023 baseline: strikes between other countries, routine IDF activity
+  // and statements are "routine". Escalation = something aimed at Israel; emergency = actual fire at Israel.
+  const IL = /ישראל|ישראלי|צה"ל|צה״ל|פיקוד העורף|צבע אדום|גוש דן|תל אביב|ירושלים|חיפה|אילת|באר שבע|עוטף|קריית שמונה|הגליל|נהריה|אשקלון|אשדוד|שדרות|הקריות|\b(israel|israeli|idf|tel aviv|jerusalem|haifa|eilat)\b/i;
+  const ALARM = /אזעק|צבע אדום|\bsirens?\b/i;
+  const PROJ = /טיל|רקט|כטב"ם|כטב״ם|כטב"מ|רחפן|מל"ט|\b(missiles?|rockets?|drones?|uavs?|barrage)\b/i;
+  const FIRED = /שיגור|שוגר|שיגרו|שיגר |נורה|נורו|ירי |מטח|יירוט|יורט|יירטו|נפל|נפילה|נפילת|פגיעה|פגע|\b(fired|launched|intercept\w*|hit|struck|impact)\b/i;
+  const TOWARD = /לעבר ישראל|לישראל|בישראל|לעבר הצפון|לעבר הדרום|לעבר אילת|לעבר המרכז|\b(at|toward|towards|into|on) israel\b/i;
+  const MASS = /(פיגוע|ירי|דקירה|דריסה).{0,40}(נרצח|נרצחו|הרוג|נהרג|נהרגו)|(נרצח|נרצחו|הרוגים).{0,40}(פיגוע)/;
+  const THREAT = /איום|איים|מאיים|מאיימת|מאיימים|יתקוף|נתקוף|ננקום|נקמה|תגובה קשה|נגיב|הכרזת מלחמה|נפתח במלחמה|\b(threat\w*|vows?|retaliat\w*|revenge|declares? war)\b/i;
+  const MOBIL = /גיוס מילואים|צו 8|כוננות שיא|כוננות עליונה|הנחיות (חדשות של )?פיקוד העורף|הגבלות התקהלות|מרחבים מוגנים|\b(call-?up of reservists|mobiliz\w*)\b/i;
+  const STRIKE = /תקיפ|תקף|תקפה|תקפו|הפצצ|חיסול|חוסל|חיסל|\b(strikes?|struck|airstrikes?|assassinat\w*)\b/i;
   const MAYBE = /עשוי|עשויה|עשויים|עשויות|עלול|עלולה|עלולים|עלולות|יכול|יכולה|יכולות|מסוגל|\b(could|may|might|capable)\b/i;
   const CALM = /\?|האם |פרשנות|ניתוח|דעה:|טור:|מדוע|למה |מאחורי הקלעים|\b(analysis|opinion|why|how|explainer)\b/i;
-  const sevOf = (it) => { if (it._s != null) return it._s; const t = it.t || ""; let s = SEV4.test(t) || SEV4B.test(t) ? 4 : SEV3.test(t) ? 3 : 2; if (s === 4 && MAYBE.test(t)) s = 3; if (CALM.test(t)) s = s >= 3 ? 2 : 1; return (it._s = s); };
-  // an arena's level fades with time: emergency counts for 3h, escalation for 8h, then the item is just routine
-  const lvOf = (it) => { const age = (now() - Date.parse(it.f)) / 3600e3, s = sevOf(it); return s === 4 && age > 3 ? (age > 8 ? 2 : 3) : s === 3 && age > 8 ? 2 : s; };
+  function sevOf(it){
+    if (it._s != null) return it._s;
+    const t = it.t || "", heb = /[֐-׿]/.test(t), il = IL.test(t), far = (it.a || []).some((a) => ["iran", "yemen", "iraq", "turkey", "qatar"].includes(a));
+    let s = 2;
+    if ((ALARM.test(t) && (heb || il)) || (PROJ.test(t) && FIRED.test(t) && (TOWARD.test(t) || (il && !STRIKE.test(t)))) || MASS.test(t)) s = 4;
+    else if ((THREAT.test(t) && il) || MOBIL.test(t) || (STRIKE.test(t) && il && far)) s = 3;
+    if (s === 4 && MAYBE.test(t)) s = 3;
+    if (CALM.test(t)) s = s >= 3 ? 2 : 1;
+    return (it._s = s);
+  }
+  // emergency stays for 3h then reads as escalation until 8h; escalation lasts 6h
+  const lvOf = (it) => { const age = (now() - Date.parse(it.f)) / 3600e3, s = sevOf(it); return s === 4 ? (age <= 3 ? 4 : age <= 8 ? 3 : 2) : s === 3 && age > 6 ? 2 : s; };
   const LV = { 1: ["רקע", "calm"], 2: ["שגרה", "calm"], 3: ["הסלמה", "esc"], 4: ["חירום", "emg"] };
   const warSeen = () => { let s = store.get("warSeen", null); if (!s) { s = {}; const t = Date.now() - 6 * 3600e3; for (const k in ARENA) s[k] = t; store.set("warSeen", s); } return s; };
   function warStats(){
     const W = S.war, seen = warSeen(), st = {};
     for (const k in ARENA) st[k] = { all: [], fresh: 0, last: null, lv: 0, n3: 0 };
-    for (const it of (W && W.items) || []) for (const a of it.a || []) { const x = st[a]; if (!x) continue; x.all.push(it); if (Date.parse(it.f) - S.skew > (seen[a] || 0)) x.fresh++; if (!x.last) x.last = it; const l = lvOf(it), age = (now() - Date.parse(it.f)) / 3600e3; if (l >= 3) x.n3++; x.lv = Math.max(x.lv, l === 3 && age > 3 ? 2 : l); }
+    for (const it of (W && W.items) || []) for (const a of it.a || []) { const x = st[a]; if (!x) continue; x.all.push(it); if (Date.parse(it.f) - S.skew > (seen[a] || 0)) x.fresh++; if (!x.last) x.last = it; const l = lvOf(it), age = (now() - Date.parse(it.f)) / 3600e3; if (l >= 3) x.n3++; x.lv = Math.max(x.lv, l === 3 && age > 2 ? 2 : l); }
     for (const k in st) if (st[k].lv < 3 && st[k].n3 >= 2) st[k].lv = 3;
     return st;
   }
@@ -1084,20 +1138,19 @@ Return ONLY JSON, Hebrew text, neutral and factual:
   const velChip = (s) => s.v30 >= 2 ? `<span class="chp vel">🔥 ${s.v30} דיווחים בחצי שעה</span>` : "";
   function card(s){
     const names = [...new Set((s.articles || []).map((a) => a.o))]; const T = tierOf(s); const fl = S.fresh && S.fresh.has(s.id) ? "flash" : "";
+    const srcs = `<span class="stack">${names.slice(0, 4).map(logo).join("")}</span><span class="cnt">${s.source_count > 1 ? `${s.source_count} מקורות` : esc(names[0] || "")}</span>`;
     if (T === "S") {
       const hot = now() - Date.parse(s.last_seen) < 25 * 60000;
       return `<div class="tS ${fl}" data-open="${s.id}"><div class="wm">${s.importance}</div>
-        <div class="top"><span class="stamp">${s.breaking && now() - Date.parse(s.first_seen) < 3 * 3600e3 ? "מבזק · " : ""}${LVLN(s)}</span>${hot ? `<span class="tlive">מתעדכן עכשיו</span>` : ""}<span class="ttm">${ago(s.last_seen)}</span></div>
+        <div class="top"><span class="stamp">${s.breaking && now() - Date.parse(s.first_seen) < 3 * 3600e3 ? "מבזק · " : ""}${LVLN(s)}</span>${hot ? `<span class="tlive">מתעדכן</span>` : ""}<span class="ttm">${ago(s.last_seen)}</span></div>
         <h2 dir="auto">${esc(s.title)}</h2>
         ${s.why ? `<div class="why"><b>למה זה חשוב:</b> ${esc(s.why)}</div>` : s.summary ? `<div class="why" dir="auto">${esc(s.summary)}</div>` : ""}
-        <div class="ft">${meter(s.importance, "big")}${relChip(s)}${velChip(s)}</div>
-        <div class="ft"><span class="srcs"><span class="stack">${names.slice(0, 5).map(logo).join("")}</span>${esc(names.slice(0, 4).join(", "))}${names.length > 4 ? ` ועוד ${names.length - 4}` : ""}</span></div></div>`;
+        <div class="ft">${meter(s.importance)}${srcs}${relChip(s, true)}${s.v30 >= 2 ? `<span class="chp vel s">🔥 ${s.v30}</span>` : ""}</div></div>`;
     }
-    if (T === "A") return `<div class="tA ${fl}" data-open="${s.id}"><div class="top"><span class="lvl">${LVLN(s)}</span>${meter(s.importance)}<span class="ttm">${ago(s.last_seen)}</span></div>
-        <h3 dir="auto">${esc(s.title)}</h3>${s.summary ? `<div class="sm2" dir="auto">${esc(s.summary)}</div>` : ""}
-        <div class="ft"><span class="stack">${names.slice(0, 4).map(logo).join("")}</span>${s.source_count > 1 ? `${s.source_count} מקורות` : esc(names[0] || "")}${relChip(s, true)}${s.v30 >= 2 ? `<span class="chp vel s">🔥 ${s.v30}</span>` : ""}</div></div>`;
-    if (T === "B") return `<div class="tB ${s.ai ? "" : "q"} ${fl}" data-open="${s.id}"><div class="side"></div><div class="bd"><div class="kk2"><span class="lvl">${LVLN(s)}</span>${s.ai ? meter(s.importance, "sm") : ""}<span>· ${esc(TOPICS[s.topic] || "")}${TOPICS[s.topic] ? " · " : ""}${ago(s.last_seen)}</span></div>
-        <div class="tt2" dir="auto">${esc(s.title)}</div><div class="ft2"><span class="stack">${names.slice(0, 4).map(logo).join("")}</span>${s.source_count > 1 ? `${s.source_count} מקורות` : esc(names[0] || "")}${relChip(s, true)}</div></div></div>`;
+    if (T === "A") return `<div class="tA ${fl}" data-open="${s.id}"><div class="tt3" dir="auto">${esc(s.title)}</div>
+        <div class="mf"><span class="lvl">${LVLN(s)}</span>${meter(s.importance, "sm")}${srcs}${relChip(s, true)}${s.v30 >= 2 ? `<span class="chp vel s">🔥 ${s.v30}</span>` : ""}<span class="ttm">${ago(s.last_seen)}</span></div></div>`;
+    if (T === "B") return `<div class="tB ${s.ai ? "" : "q"} ${fl}" data-open="${s.id}"><div class="side"></div><div class="bd"><div class="tt2" dir="auto">${esc(s.title)}</div>
+        <div class="mf"><span class="lvl">${LVLN(s)}</span>${s.ai ? meter(s.importance, "sm") : ""}${srcs}${relChip(s, true)}<span class="ttm">${ago(s.last_seen)}</span></div></div></div>`;
     return `<div class="tC ${fl}" data-open="${s.id}"><span class="n">${s.ai ? s.importance : "·"}</span><span class="t" dir="auto">${esc(s.title)}</span><span class="s">${ago(s.last_seen)}</span></div>`;
   }
   function tieredList(list, lim){

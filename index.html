@@ -588,15 +588,20 @@ body.lock{overflow:hidden}
 .status .foot2 .s{font-size:11px}
 .steps{margin-top:10px}.step{font-size:10px;min-width:56px}.step .d{width:11px;height:11px;margin-bottom:4px}.step::before{top:5px}.step small{display:none}
 .status .foot{margin-top:8px;padding-top:7px;font-size:11px}
-.brief.sm{margin:8px 0 12px;padding:9px 12px}
-.brief.sm .t{font-size:12px}.brief.sm ol{margin-top:5px}
-.brief.sm li{font-size:13px;line-height:1.42;padding:4px 0;gap:7px}
-.brief.sm li::before{width:17px;height:17px;font-size:10.5px;border-radius:5px;margin-top:1px}
-.brief.sm{padding:8px 11px}
-.brief.sm li{font-size:13px;line-height:1.45;padding:4px 0;border-top:0;color:var(--ink)}
-.brief.sm li{display:flex}
-.brief.sm li::before{background:transparent;color:var(--muted);width:12px}
+.brief.bsm{margin:8px 0 12px;padding:9px 12px}
+.brief.bsm .t{font-size:12px}.brief.bsm ol{margin-top:5px}
+.brief.bsm li{font-size:13px;line-height:1.42;padding:4px 0;gap:7px}
+.brief.bsm li::before{width:17px;height:17px;font-size:10.5px;border-radius:5px;margin-top:1px}
+.brief.bsm{padding:8px 11px}
+.brief.bsm li{font-size:13px;line-height:1.45;padding:4px 0;border-top:0;color:var(--ink)}
+.brief.bsm li{display:flex}
+.brief.bsm li::before{background:transparent;color:var(--muted);width:12px}
 .status .kick{display:none}.pm{margin-top:0}
+/* bottom line: plain blocks (no flex/counters) so every browser shows the text */
+.brief.bsm .bl{display:block;margin-top:6px}
+.brief.bsm .bl-i{display:block;position:relative;padding:3px 20px 3px 0;font-size:13.5px;line-height:1.45;color:var(--ink);text-align:right;direction:rtl;white-space:normal;height:auto;max-height:none;overflow:visible}
+.brief.bsm .bl-n{position:absolute;right:0;top:4px;width:15px;text-align:center;font-size:11px;font-weight:800;color:var(--muted)}
+.brief.bsm .bl-x{display:inline}
 </style>
 </head>
 <body>
@@ -940,7 +945,7 @@ Return ONLY JSON, Hebrew text, neutral and factual:
         ${S.statusOpen && T.any ? `<div class="tally"><div class="kick" style="margin-bottom:6px">המלצות לנשיא</div>${tallyBar(T)}</div>` : ""}
         <div class="foot"><button class="morebtn" data-status>${S.statusOpen ? "הסתר המלצות ▴" : "המלצות לנשיא ▾"}</button><span id="aiS" class="ai"><i></i><span>Claude</span></span>${D.b.at ? `<span>לוח עודכן ${ago(D.b.at)}</span>` : ""}</div>
       </section>`;
-      if (D.b.bullets && D.b.bullets.length) h += `<section class="brief sm"><div class="t">🧭 השורה התחתונה<small>${D.b.at ? "עודכן " + ago(D.b.at) : ""}</small></div><ol>${D.b.bullets.slice(0, 3).map((x) => `<li dir="auto">${esc(x)}</li>`).join("")}</ol></section>`;
+      if (D.b.bullets && D.b.bullets.length) h += `<section class="brief bsm"><div class="t">🧭 השורה התחתונה<small>${D.b.at ? "עודכן " + ago(D.b.at) : ""}</small></div><div class="bl">${D.b.bullets.slice(0, 3).map((x, i) => `<div class="bl-i"><span class="bl-n">${i + 1}</span><span class="bl-x">${esc(String(x))}</span></div>`).join("")}</div></section>`;
       // ---- the main 2-3 things: since the last visit, or the last hours ----
       const effImp = (s) => s.ai || (s.source_count || 0) >= 3 ? s.importance : Math.min(s.importance, 7);
       const pool = (d.stories || []).filter((s) => (s.ai || (s.source_count || 0) >= 2) && (effImp(s) >= 6 || (s.source_count || 0) >= 4)).sort((x, y) => (effImp(y) * 10 + Math.min(y.source_count || 0, 30)) - (effImp(x) * 10 + Math.min(x.source_count || 0, 30)));
@@ -1357,7 +1362,7 @@ Return ONLY JSON, Hebrew text, neutral and factual:
 
   // ---------- install as app ----------
   // ---------- always run the newest version ----------
-  const BUILD = "20261108102127";
+  const BUILD = "20261108125146";
   let swReg = null;
   try { if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js", { updateViaCache: "none" }).then((r) => { swReg = r; }).catch(() => {}); } catch {}
   async function checkVersion(){

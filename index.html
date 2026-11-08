@@ -546,6 +546,33 @@ main.wrap{will-change:transform}
 .xbtn:active{transform:scale(.92)}
 body.lock{overflow:hidden}
 .nav .n.dot{min-width:8px;width:8px;height:8px;padding:0;top:7px;left:calc(50% - 16px)}
+
+/* compact status line + "העיקר" */
+.sline{background:var(--p1);border:1px solid var(--line);border-radius:18px;margin-bottom:12px;overflow:hidden}
+.sl-row{all:unset;box-sizing:border-box;display:flex;align-items:stretch;width:100%;cursor:pointer;padding:9px 10px 6px}
+.sl-c{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px;padding:0 6px;border-inline-start:1px solid var(--line)}.sl-c:first-child{border:0}
+.sl-c small{font-size:10.5px;color:var(--muted);font-weight:700}
+.sl-c b{font-size:14.5px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sl-c em{font-style:normal;font-size:11px;color:var(--ink2);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sl-x{flex:none;align-self:center;color:var(--muted);font-size:13px;padding:0 4px}
+.sl-p{display:flex;align-items:center;gap:8px;padding:0 14px 9px}
+.sl-segs{display:flex;gap:3px;flex:1;direction:rtl}.sl-segs i{flex:1;height:4px;border-radius:2px;background:var(--p3)}.sl-segs i.done{background:var(--green)}.sl-segs i.cur{background:var(--amber);box-shadow:0 0 8px rgba(255,178,36,.6)}
+.sl-st{font-size:11px;color:var(--ink2);font-weight:700;white-space:nowrap}
+.sl-more{padding:4px 12px 12px;border-top:1px solid var(--line)}
+.sl-more .tiles{margin-top:10px}.brief.in{margin:12px 0 0}
+.main3{margin-bottom:14px}
+.m3-h{display:flex;align-items:baseline;gap:8px;margin:2px 4px 8px}.m3-h b{font-size:19px;font-weight:900}.m3-h span{font-size:12px;color:var(--muted);font-weight:700}
+.m3{display:flex;gap:11px;align-items:flex-start;padding:11px 12px;border-radius:16px;margin-bottom:7px;cursor:pointer;background:var(--p1);border:1px solid var(--line);position:relative}
+.m3-n{flex:none;width:28px;height:28px;border-radius:9px;display:grid;place-items:center;font-weight:900;font-size:14px;background:var(--p3);color:var(--ink2);margin-top:1px}
+.m3.r{border-color:rgba(255,68,88,.5);background:linear-gradient(90deg,rgba(255,68,88,.14),rgba(255,68,88,.03) 70%),var(--p1)}.m3.r .m3-n{background:var(--red);color:#fff}
+.m3.a{border-color:rgba(255,178,36,.38);background:linear-gradient(90deg,rgba(255,178,36,.10),transparent 70%),var(--p1)}.m3.a .m3-n{background:var(--amber);color:#2a1a00}
+.m3.b .m3-n{background:rgba(69,195,255,.16);color:var(--cyan)}
+.m3-b{flex:1;min-width:0}
+.m3-t{font-size:15.5px;font-weight:800;line-height:1.36;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.m3.first .m3-t{font-size:17px;-webkit-line-clamp:3}
+.m3-w{font-size:12.5px;color:var(--ink2);line-height:1.4;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.m3-m{display:flex;align-items:center;gap:6px;margin-top:6px;font-size:11.5px;color:var(--muted);font-weight:700;min-width:0}
+.m3-m .lg{width:18px;height:18px;border-radius:6px;font-size:9.5px}.m3-m .chp.s{padding:1px 6px;font-size:10.5px}.m3-m .ttm{margin-inline-start:auto;font-size:11px}
 </style>
 </head>
 <body>
@@ -607,7 +634,7 @@ body.lock{overflow:hidden}
   const S = {
     tab: "home", actor: null, q: "", data: null, skew: 0, limit: 50, loading: false,
     thr: store.get("thr", 8), vel: store.get("vel", true), snd: store.get("snd", false), aiOn: store.get("aiOn", true),
-    alerted: store.get("alerted", {}), lastVisit: store.get("lastVisit", null), toasts: [], unread: 0,
+    alerted: store.get("alerted", {}), lastVisit: store.get("lastVisit", null), statusOpen: store.get("statusOpen", false), toasts: [], unread: 0,
     mcp: null, sample: null, logos: store.get("logos", {}), showAll: false,
     ai: { state: "off", busy: false, backoff: 0, pending: null },
   };
@@ -876,26 +903,43 @@ Return ONLY JSON, Hebrew text, neutral and factual:
           : `<div class="tile"><div class="l">הכנסת ה־26</div><div class="v">${kn === 0 ? "מושבעת היום" : "טרם הושבעה"}</div><div class="s foot2" style="color:var(--muted)">${D.knessetDate ? dmy(D.knessetDate) : ""}</div></div>`;
       const steps = STAGES.map(([k, l, sub], i) => `<div class="step ${D.idx > i ? "done" : D.idx === i ? "cur" : ""}"><div class="d"></div>${l}${sub ? `<small>${sub}</small>` : ""}</div>`).join("");
       const T = tallyData();
-      h += `<section class="status">
-        <div class="kick">ראש הממשלה</div>
-        <div class="pm"><b>${esc(st.pm || "בנימין נתניהו")}</b><span class="badge ${D.stage === "government" ? "g" : ""}">${esc(st.pm_status || "ראש ממשלת מעבר")}</span></div>
-        <div class="tiles">${mandateTile}${knTile}</div>
-        <div class="steps">${steps}</div>
-        ${D.stage === "new_elections" ? `<div class="alt">⚠️ התהליך הסתיים בלי ממשלה — בדרך לבחירות חוזרות.</div>` : ""}
-        ${T.any ? `<div class="tally"><div class="kick" style="margin-bottom:6px">המלצות לנשיא</div>${tallyBar(T)}</div>` : ""}
-        <div class="foot"><span id="aiS" class="ai"><i></i><span>Claude</span></span><span>${d.feeds ? `${d.feeds.ok}/${d.feeds.total} מקורות` : ""}</span>${D.b.at ? `<span>לוח עודכן ${ago(D.b.at)}</span>` : ""}</div>
+      // ---- one-line status (tap for the full board) ----
+      const last = (n) => String(n || "").split(" ").slice(-1)[0];
+      const mB = m.holder ? esc(last(m.holder)) : "טרם הוטל";
+      const mE = !m.holder ? (m.expected ? `צפוי: ${esc(m.expected)}` : "") : (m.given && daysTo(m.given) > 0) ? `טקס ${inDays(daysTo(m.given))}${m.time ? ` · ${esc(m.time)}` : ""}` : (m.given && daysTo(m.given) === 0) ? `הטקס היום${m.time ? ` · ${esc(m.time)}` : ""}` : m.given ? `נותרו ${Math.max(0, (m.extended ? 42 : 28) - Math.max(0, -daysTo(m.given)))} ימים` : "";
+      const kB = D.sworn ? "הושבעה" : kn != null && kn > 1 ? `עוד ${kn} ימים` : kn === 1 ? "מחר" : kn === 0 ? "היום" : "—";
+      const kE = D.sworn ? (st.speaker ? `יו״ר: ${esc(last(st.speaker))}` : "") : "השבעה";
+      const segs = STAGES.map((x, i) => `<i class="${D.idx > i ? "done" : D.idx === i ? "cur" : ""}"></i>`).join("");
+      h += `<section class="sline ${S.statusOpen ? "open" : ""}">
+        <button class="sl-row" data-status>
+          <span class="sl-c"><small>רה״מ</small><b>${esc((st.pm || "בנימין נתניהו").split(" ").slice(-1)[0])}</b><em>${esc(st.pm_status ? st.pm_status.replace("ראש ממשלת ", "") : "מעבר")}</em></span>
+          <span class="sl-c"><small>מנדט</small><b>${mB}</b><em>${mE}</em></span>
+          <span class="sl-c"><small>הכנסת ה־26</small><b>${kB}</b><em>${kE}</em></span>
+          <span class="sl-x">${S.statusOpen ? "▴" : "▾"}</span>
+        </button>
+        <div class="sl-p"><span class="sl-segs">${segs}</span><span class="sl-st">שלב ${Math.min(D.idx + 1, STAGES.length)} מתוך ${STAGES.length} · ${esc((STAGES[D.idx] || STAGES[STAGES.length - 1])[1])}</span></div>
+        ${S.statusOpen ? `<div class="sl-more">
+          <div class="tiles">${mandateTile}${knTile}</div>
+          <div class="steps">${steps}</div>
+          ${D.stage === "new_elections" ? `<div class="alt">⚠️ התהליך הסתיים בלי ממשלה — בדרך לבחירות חוזרות.</div>` : ""}
+          ${T.any ? `<div class="tally"><div class="kick" style="margin-bottom:6px">המלצות לנשיא</div>${tallyBar(T)}</div>` : ""}
+          ${D.b.bullets && D.b.bullets.length ? `<div class="brief in"><div class="t">🧭 השורה התחתונה<small>${D.b.at ? "עודכן " + ago(D.b.at) : ""}</small></div><ol>${D.b.bullets.map((x) => `<li dir="auto">${esc(x)}</li>`).join("")}</ol></div>` : ""}
+          <div class="foot"><span id="aiS" class="ai"><i></i><span>Claude</span></span><span>${d.feeds ? `${d.feeds.ok}/${d.feeds.total} מקורות` : ""}</span>${D.b.at ? `<span>לוח עודכן ${ago(D.b.at)}</span>` : ""}</div>
+        </div>` : ""}
       </section>`;
-      // briefing
-      const b = D.b;
-      if (b.bullets && b.bullets.length) h += `<section class="brief"><div class="t">🧭 השורה התחתונה<small>${b.at ? "עודכן " + ago(b.at) : ""}</small></div><ol>${b.bullets.map((x) => `<li dir="auto">${esc(x)}</li>`).join("")}</ol></section>`;
-      else h += `<section class="brief wait">🧭 Claude יכתוב כאן את השורה התחתונה ויעדכן את לוח המצב ברגע שיסיים לנתח את הידיעות האחרונות.</section>`;
-      // now strip
-      const hot = (d.stories || []).filter((s) => s.ai && s.importance >= 7 && now() - Date.parse(s.last_seen) < 2 * 3600e3).slice(0, 6);
-      if (hot.length) h += `<div class="h">עכשיו<span class="c">· שעתיים אחרונות</span></div><div class="now">${hot.map((s) => { const names = [...new Set((s.articles || []).map((a) => a.o))]; return `<div class="nw" data-open="${s.id}"><div class="k">● חשיבות ${s.importance}/10 · ${ago(s.last_seen)}${s.v30 >= 2 ? ` · 🔥 ${s.v30} בחצי שעה` : ""}</div><div class="tt" dir="auto">${esc(s.title)}</div><div class="ft"><span class="stack">${names.slice(0, 4).map(logo).join("")}</span>${s.source_count} מקורות</div></div>`; }).join("")}</div>`;
+      // ---- the main 2-3 things: since the last visit, or the last hours ----
+      const pool = (d.stories || []).filter((s) => s.importance >= 6 || (s.source_count || 0) >= 4);
+      let since = S.lastVisit && now() - S.lastVisit < 36 * 3600e3 ? pool.filter((s) => Date.parse(s.last_seen) - S.skew > S.lastVisit) : [];
+      let label = "מאז הביקור הקודם", top = since.slice(0, 3);
+      if (top.length < 2) { const win = [6, 12, 24].find((hh) => pool.filter((s) => now() - Date.parse(s.last_seen) < hh * 3600e3).length >= 3) || 24; top = pool.filter((s) => now() - Date.parse(s.last_seen) < win * 3600e3).slice(0, 3); label = `ב־${win} השעות האחרונות`; }
+      S.mainIds = new Set(top.map((s) => s.id));
+      if (top.length) h += `<section class="main3"><div class="m3-h"><b>העיקר</b><span>${label}</span></div>${top.map((s, i) => {
+        const names = [...new Set((s.articles || []).map((a) => a.o))]; const c = s.importance >= 9 ? "r" : s.importance >= 7 ? "a" : "b";
+        return `<div class="m3 ${c} ${i === 0 ? "first" : ""}" data-open="${s.id}"><span class="m3-n">${i + 1}</span><div class="m3-b"><div class="m3-t" dir="auto">${esc(s.title)}</div>${i === 0 && (s.why || s.summary) ? `<div class="m3-w" dir="auto">${esc(s.why || s.summary)}</div>` : ""}<div class="m3-m"><span class="stack">${names.slice(0, 4).map(logo).join("")}</span><span>${s.source_count > 1 ? `${s.source_count} מקורות` : esc(names[0] || "")}</span>${relChip(s, true)}<span class="ttm">${ago(s.last_seen)}</span></div></div></div>`; }).join("")}</section>`;
     }
-    const all = filtered(d.stories); const ai = all.filter((s) => s.ai), wait = all.filter((s) => !s.ai);
+    const all = filtered(d.stories).filter((s) => filt || !S.mainIds || !S.mainIds.has(s.id)); const ai = all.filter((s) => s.ai), wait = all.filter((s) => !s.ai);
     const nNew = S.lastVisit ? ai.filter((s) => Date.parse(s.first_seen) > S.lastVisit).length : 0;
-    h += `<div class="h">${filt ? "תוצאות" : "הסיפורים החשובים"}<span class="c">· ${all.length}${nNew ? ` · ${nNew} חדשים מאז הביקור הקודם` : ""}</span></div>`;
+    h += `<div class="h">${filt ? "תוצאות" : "עוד ידיעות"}<span class="c">· ${all.length}${nNew ? ` · ${nNew} חדשים מאז הביקור הקודם` : ""}</span></div>`;
     if (!ai.length && !wait.length) return h + `<div class="empty">אין ידיעות שתואמות.</div>`;
     const lim = S.showAll ? ai.length : 12;
     h += tlegend() + tieredList(all, lim);
@@ -1225,7 +1269,7 @@ Return ONLY JSON, Hebrew text, neutral and factual:
 
   // ---------- events ----------
   $("nav").addEventListener("click", (e) => { const b = e.target.closest("button[data-tab]"); if (!b) return; S.tab = b.dataset.tab; [...$("nav").children].forEach((x) => x.classList.toggle("on", x === b)); S.showAll = false; S.fresh = new Set(); render(); const v = $("view"); v.classList.remove("fade"); void v.offsetWidth; v.classList.add("fade"); window.scrollTo({ top: 0 }); try { navigator.vibrate && navigator.vibrate(6); } catch {} });
-  $("view").addEventListener("click", (e) => { const ar = e.target.closest("[data-arena]"); if (ar) { openArena(ar.dataset.arena); return; } if (e.target.closest("[data-how]")) { openMenu("how"); return; } if (e.target.closest("a.go, a.wr, a.ev, a.pr")) return; const o = e.target.closest("[data-open]"); if (o) { e.preventDefault(); openStory(+o.dataset.open); } });
+  $("view").addEventListener("click", (e) => { if (e.target.closest("[data-status]")) { S.statusOpen = !S.statusOpen; store.set("statusOpen", S.statusOpen); render(); return; } const ar = e.target.closest("[data-arena]"); if (ar) { openArena(ar.dataset.arena); return; } if (e.target.closest("[data-how]")) { openMenu("how"); return; } if (e.target.closest("a.go, a.wr, a.ev, a.pr")) return; const o = e.target.closest("[data-open]"); if (o) { e.preventDefault(); openStory(+o.dataset.open); } });
   $("chips").addEventListener("click", (e) => { const b = e.target.closest("[data-actor]"); if (!b) return; S.actor = S.actor === b.dataset.actor ? null : b.dataset.actor; render(); });
   $("bSearch").addEventListener("click", () => { S.filtersOpen = !S.filtersOpen; $("sbox").classList.toggle("hide", !S.filtersOpen); $("bSearch").classList.toggle("on", S.filtersOpen); if (S.filtersOpen) $("q").focus(); else { S.q = ""; S.actor = null; $("q").value = ""; } render(); });
   $("q").addEventListener("input", (e) => { S.q = e.target.value.trim(); render(); });
@@ -1298,7 +1342,7 @@ Return ONLY JSON, Hebrew text, neutral and factual:
 
   // ---------- install as app ----------
   // ---------- always run the newest version ----------
-  const BUILD = "20261107203842";
+  const BUILD = "20261108095358";
   let swReg = null;
   try { if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js", { updateViaCache: "none" }).then((r) => { swReg = r; }).catch(() => {}); } catch {}
   async function checkVersion(){

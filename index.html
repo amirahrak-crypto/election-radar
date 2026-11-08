@@ -573,6 +573,7 @@ body.lock{overflow:hidden}
 .m3-w{font-size:12.5px;color:var(--ink2);line-height:1.4;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .m3-m{display:flex;align-items:center;gap:6px;margin-top:6px;font-size:11.5px;color:var(--muted);font-weight:700;min-width:0}
 .m3-m .lg{width:18px;height:18px;border-radius:6px;font-size:9.5px}.m3-m .chp.s{padding:1px 6px;font-size:10.5px}.m3-m .ttm{margin-inline-start:auto;font-size:11px}
+.morebtn{all:unset;cursor:pointer;color:var(--cyan);font-weight:800;font-size:12px}
 </style>
 </head>
 <body>
@@ -904,28 +905,15 @@ Return ONLY JSON, Hebrew text, neutral and factual:
       const steps = STAGES.map(([k, l, sub], i) => `<div class="step ${D.idx > i ? "done" : D.idx === i ? "cur" : ""}"><div class="d"></div>${l}${sub ? `<small>${sub}</small>` : ""}</div>`).join("");
       const T = tallyData();
       // ---- one-line status (tap for the full board) ----
-      const last = (n) => String(n || "").split(" ").slice(-1)[0];
-      const mB = m.holder ? esc(last(m.holder)) : "טרם הוטל";
-      const mE = !m.holder ? (m.expected ? `צפוי: ${esc(m.expected)}` : "") : (m.given && daysTo(m.given) > 0) ? `טקס ${inDays(daysTo(m.given))}${m.time ? ` · ${esc(m.time)}` : ""}` : (m.given && daysTo(m.given) === 0) ? `הטקס היום${m.time ? ` · ${esc(m.time)}` : ""}` : m.given ? `נותרו ${Math.max(0, (m.extended ? 42 : 28) - Math.max(0, -daysTo(m.given)))} ימים` : "";
-      const kB = D.sworn ? "הושבעה" : kn != null && kn > 1 ? `עוד ${kn} ימים` : kn === 1 ? "מחר" : kn === 0 ? "היום" : "—";
-      const kE = D.sworn ? (st.speaker ? `יו״ר: ${esc(last(st.speaker))}` : "") : "השבעה";
-      const segs = STAGES.map((x, i) => `<i class="${D.idx > i ? "done" : D.idx === i ? "cur" : ""}"></i>`).join("");
-      h += `<section class="sline ${S.statusOpen ? "open" : ""}">
-        <button class="sl-row" data-status>
-          <span class="sl-c"><small>רה״מ</small><b>${esc((st.pm || "בנימין נתניהו").split(" ").slice(-1)[0])}</b><em>${esc(st.pm_status ? st.pm_status.replace("ראש ממשלת ", "") : "מעבר")}</em></span>
-          <span class="sl-c"><small>מנדט</small><b>${mB}</b><em>${mE}</em></span>
-          <span class="sl-c"><small>הכנסת ה־26</small><b>${kB}</b><em>${kE}</em></span>
-          <span class="sl-x">${S.statusOpen ? "▴" : "▾"}</span>
-        </button>
-        <div class="sl-p"><span class="sl-segs">${segs}</span><span class="sl-st">שלב ${Math.min(D.idx + 1, STAGES.length)} מתוך ${STAGES.length} · ${esc((STAGES[D.idx] || STAGES[STAGES.length - 1])[1])}</span></div>
-        ${S.statusOpen ? `<div class="sl-more">
-          <div class="tiles">${mandateTile}${knTile}</div>
-          <div class="steps">${steps}</div>
-          ${D.stage === "new_elections" ? `<div class="alt">⚠️ התהליך הסתיים בלי ממשלה — בדרך לבחירות חוזרות.</div>` : ""}
-          ${T.any ? `<div class="tally"><div class="kick" style="margin-bottom:6px">המלצות לנשיא</div>${tallyBar(T)}</div>` : ""}
-          ${D.b.bullets && D.b.bullets.length ? `<div class="brief in"><div class="t">🧭 השורה התחתונה<small>${D.b.at ? "עודכן " + ago(D.b.at) : ""}</small></div><ol>${D.b.bullets.map((x) => `<li dir="auto">${esc(x)}</li>`).join("")}</ol></div>` : ""}
-          <div class="foot"><span id="aiS" class="ai"><i></i><span>Claude</span></span><span>${d.feeds ? `${d.feeds.ok}/${d.feeds.total} מקורות` : ""}</span>${D.b.at ? `<span>לוח עודכן ${ago(D.b.at)}</span>` : ""}</div>
-        </div>` : ""}
+      h += `<section class="status">
+        <div class="kick">ראש הממשלה</div>
+        <div class="pm"><b>${esc(st.pm || "בנימין נתניהו")}</b><span class="badge ${D.stage === "government" ? "g" : ""}">${esc(st.pm_status || "ראש ממשלת מעבר")}</span></div>
+        <div class="tiles">${mandateTile}${knTile}</div>
+        <div class="steps">${steps}</div>
+        ${D.stage === "new_elections" ? `<div class="alt">⚠️ התהליך הסתיים בלי ממשלה — בדרך לבחירות חוזרות.</div>` : ""}
+        ${S.statusOpen ? `${T.any ? `<div class="tally"><div class="kick" style="margin-bottom:6px">המלצות לנשיא</div>${tallyBar(T)}</div>` : ""}
+          ${D.b.bullets && D.b.bullets.length ? `<div class="brief in"><div class="t">🧭 השורה התחתונה<small>${D.b.at ? "עודכן " + ago(D.b.at) : ""}</small></div><ol>${D.b.bullets.map((x) => `<li dir="auto">${esc(x)}</li>`).join("")}</ol></div>` : ""}` : ""}
+        <div class="foot"><button class="morebtn" data-status>${S.statusOpen ? "פחות ▴" : "המלצות והשורה התחתונה ▾"}</button><span id="aiS" class="ai"><i></i><span>Claude</span></span>${D.b.at ? `<span>לוח עודכן ${ago(D.b.at)}</span>` : ""}</div>
       </section>`;
       // ---- the main 2-3 things: since the last visit, or the last hours ----
       const pool = (d.stories || []).filter((s) => s.importance >= 6 || (s.source_count || 0) >= 4);
@@ -1342,7 +1330,7 @@ Return ONLY JSON, Hebrew text, neutral and factual:
 
   // ---------- install as app ----------
   // ---------- always run the newest version ----------
-  const BUILD = "20261108095358";
+  const BUILD = "20261108095752";
   let swReg = null;
   try { if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js", { updateViaCache: "none" }).then((r) => { swReg = r; }).catch(() => {}); } catch {}
   async function checkVersion(){

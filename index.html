@@ -593,11 +593,10 @@ body.lock{overflow:hidden}
 .brief.sm li{font-size:13px;line-height:1.42;padding:4px 0;gap:7px}
 .brief.sm li::before{width:17px;height:17px;font-size:10.5px;border-radius:5px;margin-top:1px}
 .brief.sm{padding:8px 11px}
-.brief.sm li{font-size:12.5px;line-height:1.38;padding:3px 0;border-top:0}
+.brief.sm li{font-size:13px;line-height:1.45;padding:4px 0;border-top:0;color:var(--ink)}
 .brief.sm li{display:flex}
 .brief.sm li::before{background:transparent;color:var(--muted);width:12px}
 .status .kick{display:none}.pm{margin-top:0}
-.brief.sm .bl{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 </style>
 </head>
 <body>
@@ -941,7 +940,7 @@ Return ONLY JSON, Hebrew text, neutral and factual:
         ${S.statusOpen && T.any ? `<div class="tally"><div class="kick" style="margin-bottom:6px">המלצות לנשיא</div>${tallyBar(T)}</div>` : ""}
         <div class="foot"><button class="morebtn" data-status>${S.statusOpen ? "הסתר המלצות ▴" : "המלצות לנשיא ▾"}</button><span id="aiS" class="ai"><i></i><span>Claude</span></span>${D.b.at ? `<span>לוח עודכן ${ago(D.b.at)}</span>` : ""}</div>
       </section>`;
-      if (D.b.bullets && D.b.bullets.length) h += `<section class="brief sm"><div class="t">🧭 השורה התחתונה<small>${D.b.at ? "עודכן " + ago(D.b.at) : ""}</small></div><ol>${D.b.bullets.slice(0, 3).map((x) => `<li dir="auto"><span class="bl">${esc(x)}</span></li>`).join("")}</ol></section>`;
+      if (D.b.bullets && D.b.bullets.length) h += `<section class="brief sm"><div class="t">🧭 השורה התחתונה<small>${D.b.at ? "עודכן " + ago(D.b.at) : ""}</small></div><ol>${D.b.bullets.slice(0, 3).map((x) => `<li dir="auto">${esc(x)}</li>`).join("")}</ol></section>`;
       // ---- the main 2-3 things: since the last visit, or the last hours ----
       const pool = (d.stories || []).filter((s) => s.importance >= 6 || (s.source_count || 0) >= 4);
       let since = S.lastVisit && now() - S.lastVisit < 36 * 3600e3 ? pool.filter((s) => Date.parse(s.last_seen) - S.skew > S.lastVisit) : [];
@@ -1357,7 +1356,7 @@ Return ONLY JSON, Hebrew text, neutral and factual:
 
   // ---------- install as app ----------
   // ---------- always run the newest version ----------
-  const BUILD = "20261108100258";
+  const BUILD = "20261108101120";
   let swReg = null;
   try { if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js", { updateViaCache: "none" }).then((r) => { swReg = r; }).catch(() => {}); } catch {}
   async function checkVersion(){

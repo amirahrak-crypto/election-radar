@@ -594,7 +594,6 @@ body.lock{overflow:hidden}
 .brief.sm li::before{width:17px;height:17px;font-size:10.5px;border-radius:5px;margin-top:1px}
 .brief.sm{padding:8px 11px}
 .brief.sm li{font-size:12.5px;line-height:1.38;padding:3px 0;border-top:0}
-.brief.sm li > *,.brief.sm li{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .brief.sm li{display:flex}
 .brief.sm li::before{background:transparent;color:var(--muted);width:12px}
 .status .kick{display:none}.pm{margin-top:0}
@@ -675,6 +674,9 @@ body.lock{overflow:hidden}
   const dayName = (t) => new Date(t).toLocaleDateString("he-IL", { weekday: "long", day: "numeric", month: "numeric", timeZone: "Asia/Jerusalem" });
   const todayISO = () => new Date(now()).toLocaleDateString("en-CA", { timeZone: "Asia/Jerusalem" });
   function daysTo(d){ const a = Date.parse(todayISO() + "T00:00:00Z"), b = Date.parse(d + "T00:00:00Z"); return Math.round((b - a) / 864e5); }
+  const ilHM = () => new Date(now()).toLocaleTimeString("en-GB", { timeZone: "Asia/Jerusalem", hour: "2-digit", minute: "2-digit", hour12: false });
+  // the mandate counts as assigned only once the ceremony time has passed (same-day ceremonies stay "upcoming" until then)
+  const mandatePending = (m) => !!(m && m.holder && m.given) && (daysTo(m.given) > 0 || (daysTo(m.given) === 0 && !!m.time && ilHM() < m.time));
   const inDays = (n) => n === 0 ? "היום" : n === 1 ? "מחר" : n > 1 ? `בעוד ${n} ימים` : n === -1 ? "אתמול" : `לפני ${-n} ימים`;
   const addDays = (d, n) => { const x = new Date(d + "T12:00:00Z"); x.setUTCDate(x.getUTCDate() + n); return x.toISOString().slice(0, 10); };
   const ic = (i) => i >= 9 ? "i9" : i >= 7 ? "i7" : i >= 5 ? "i5" : "";
@@ -861,7 +863,7 @@ Return ONLY JSON, Hebrew text, neutral and factual:
     const knessetDate = calDate("knesset"), mDeadline = calDate("mandate_deadline");
     const sworn = st.knesset_sworn === true || (st.knesset_sworn !== false && knessetDate && daysTo(knessetDate) < 0);
     let stage = st.stage || (st.mandate && st.mandate.holder ? "forming" : "consultations");
-    if (stage === "mandate" && st.mandate && st.mandate.holder && st.mandate.given && daysTo(st.mandate.given) <= 0) stage = "forming";
+    if (stage === "mandate" && st.mandate && st.mandate.holder && st.mandate.given && !mandatePending(st.mandate)) stage = "forming";
     const map = { results:0, consultations:1, mandate:2, forming:3, extension:3, second_mandate:3, knesset_61:3, confidence:4, government:5, new_elections:-1 };
     return { b, st, cal, knessetDate, mDeadline, sworn, stage, idx: map[stage] ?? 1 };
   }
@@ -911,7 +913,7 @@ Return ONLY JSON, Hebrew text, neutral and factual:
       // status hero
       const m = st.mandate || {};
       let mandateTile;
-      if (m.holder && m.given && daysTo(m.given) > 0) {
+      if (mandatePending(m)) {
         mandateTile = `<div class="tile"><div class="l">המנדט להרכבת ממשלה</div><div class="v">${esc(m.holder)}</div><span class="chip2">● טקס ${inDays(daysTo(m.given))}${m.time ? ` · ${esc(m.time)}` : ""}</span><div class="s foot2" style="color:var(--muted)">28 הימים מתחילים מהטקס</div></div>`;
       } else if (m.holder && m.given) {
         const used = Math.max(0, -daysTo(m.given)); const total = m.extended ? 42 : 28; const left = total - used;
@@ -1355,7 +1357,7 @@ Return ONLY JSON, Hebrew text, neutral and factual:
 
   // ---------- install as app ----------
   // ---------- always run the newest version ----------
-  const BUILD = "20261108100033";
+  const BUILD = "20261108100258";
   let swReg = null;
   try { if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js", { updateViaCache: "none" }).then((r) => { swReg = r; }).catch(() => {}); } catch {}
   async function checkVersion(){

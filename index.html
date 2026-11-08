@@ -942,13 +942,14 @@ Return ONLY JSON, Hebrew text, neutral and factual:
       </section>`;
       if (D.b.bullets && D.b.bullets.length) h += `<section class="brief sm"><div class="t">🧭 השורה התחתונה<small>${D.b.at ? "עודכן " + ago(D.b.at) : ""}</small></div><ol>${D.b.bullets.slice(0, 3).map((x) => `<li dir="auto">${esc(x)}</li>`).join("")}</ol></section>`;
       // ---- the main 2-3 things: since the last visit, or the last hours ----
-      const pool = (d.stories || []).filter((s) => s.importance >= 6 || (s.source_count || 0) >= 4);
+      const effImp = (s) => s.ai || (s.source_count || 0) >= 3 ? s.importance : Math.min(s.importance, 7);
+      const pool = (d.stories || []).filter((s) => (s.ai || (s.source_count || 0) >= 2) && (effImp(s) >= 6 || (s.source_count || 0) >= 4)).sort((x, y) => (effImp(y) * 10 + Math.min(y.source_count || 0, 30)) - (effImp(x) * 10 + Math.min(x.source_count || 0, 30)));
       let since = S.lastVisit && now() - S.lastVisit < 36 * 3600e3 ? pool.filter((s) => Date.parse(s.last_seen) - S.skew > S.lastVisit) : [];
       let label = "מאז הביקור הקודם", top = since.slice(0, 3);
       if (top.length < 2) { const win = [6, 12, 24].find((hh) => pool.filter((s) => now() - Date.parse(s.last_seen) < hh * 3600e3).length >= 3) || 24; top = pool.filter((s) => now() - Date.parse(s.last_seen) < win * 3600e3).slice(0, 3); label = `ב־${win} השעות האחרונות`; }
       S.mainIds = new Set(top.map((s) => s.id));
       if (top.length) h += `<section class="main3"><div class="m3-h"><b>העיקר</b><span>${label}</span></div>${top.map((s, i) => {
-        const names = [...new Set((s.articles || []).map((a) => a.o))]; const c = s.importance >= 9 ? "r" : s.importance >= 7 ? "a" : "b";
+        const names = [...new Set((s.articles || []).map((a) => a.o))]; const c = effImp(s) >= 9 ? "r" : effImp(s) >= 7 ? "a" : "b";
         return `<div class="m3 ${c} ${i === 0 ? "first" : ""}" data-open="${s.id}"><span class="m3-n">${i + 1}</span><div class="m3-b"><div class="m3-t" dir="auto">${esc(s.title)}</div>${i === 0 && (s.why || s.summary) ? `<div class="m3-w" dir="auto">${esc(s.why || s.summary)}</div>` : ""}<div class="m3-m"><span class="stack">${names.slice(0, 4).map(logo).join("")}</span><span>${s.source_count > 1 ? `${s.source_count} מקורות` : esc(names[0] || "")}</span>${relChip(s, true)}<span class="ttm">${ago(s.last_seen)}</span></div></div></div>`; }).join("")}</section>`;
     }
     const all = filtered(d.stories).filter((s) => filt || !S.mainIds || !S.mainIds.has(s.id)); const ai = all.filter((s) => s.ai), wait = all.filter((s) => !s.ai);
@@ -1356,7 +1357,7 @@ Return ONLY JSON, Hebrew text, neutral and factual:
 
   // ---------- install as app ----------
   // ---------- always run the newest version ----------
-  const BUILD = "20261108101120";
+  const BUILD = "20261108102127";
   let swReg = null;
   try { if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js", { updateViaCache: "none" }).then((r) => { swReg = r; }).catch(() => {}); } catch {}
   async function checkVersion(){

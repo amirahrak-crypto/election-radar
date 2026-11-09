@@ -949,9 +949,9 @@ Return ONLY JSON, Hebrew text, neutral and factual:
       // ---- the main 2-3 things: since the last visit, or the last hours ----
       const effImp = (s) => s.ai || (s.source_count || 0) >= 3 ? s.importance : Math.min(s.importance, 7);
       const pool = (d.stories || []).filter((s) => (s.ai || (s.source_count || 0) >= 2) && (effImp(s) >= 6 || (s.source_count || 0) >= 4)).sort((x, y) => (effImp(y) * 10 + Math.min(y.source_count || 0, 30)) - (effImp(x) * 10 + Math.min(x.source_count || 0, 30)));
-      let since = S.lastVisit && now() - S.lastVisit < 36 * 3600e3 ? pool.filter((s) => Date.parse(s.last_seen) - S.skew > S.lastVisit) : [];
+      let since = S.lastVisit && now() - S.lastVisit < 36 * 3600e3 ? pool.filter((s) => Date.parse(s.first_seen) - S.skew > S.lastVisit) : [];
       let label = "מאז הביקור הקודם", top = since.slice(0, 3);
-      if (top.length < 2) { const win = [6, 12, 24].find((hh) => pool.filter((s) => now() - Date.parse(s.last_seen) < hh * 3600e3).length >= 3) || 24; top = pool.filter((s) => now() - Date.parse(s.last_seen) < win * 3600e3).slice(0, 3); label = `ב־${win} השעות האחרונות`; }
+      if (top.length < 2) { const win = [6, 12, 24].find((hh) => pool.filter((s) => now() - Date.parse(s.first_seen) < hh * 3600e3).length >= 3) || 24; top = pool.filter((s) => now() - Date.parse(s.first_seen) < win * 3600e3).slice(0, 3); label = `ב־${win} השעות האחרונות`; }
       S.mainIds = new Set(top.map((s) => s.id));
       if (top.length) h += `<section class="main3"><div class="m3-h"><b>העיקר</b><span>${label}</span></div>${top.map((s, i) => {
         const names = [...new Set((s.articles || []).map((a) => a.o))]; const c = effImp(s) >= 9 ? "r" : effImp(s) >= 7 ? "a" : "b";
@@ -1362,7 +1362,7 @@ Return ONLY JSON, Hebrew text, neutral and factual:
 
   // ---------- install as app ----------
   // ---------- always run the newest version ----------
-  const BUILD = "20261108125146";
+  const BUILD = "20261109191009";
   let swReg = null;
   try { if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js", { updateViaCache: "none" }).then((r) => { swReg = r; }).catch(() => {}); } catch {}
   async function checkVersion(){

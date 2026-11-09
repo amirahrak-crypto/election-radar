@@ -270,7 +270,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 <script>
 (() => {
   "use strict";
-  const BUILD = "20261108232923";
+  const BUILD = "20261109211009";
   const API = "https://mczwffsjfepeahvcmpvr.supabase.co/rest/v1/rpc/", ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jendmZnNqZmVwZWFodmNtcHZyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM4MTQzMzksImV4cCI6MjEwOTM5MDMzOX0.HJ9DImhDIvyo0ZgW9Py8GWa2QDQX-B7nBbZ5bIaP5lA";
   const $ = (id) => document.getElementById(id);
   const store = { get(k, d){ try { const v = localStorage.getItem("radar2:" + k); return v == null ? d : JSON.parse(v); } catch { return d; } }, set(k, v){ try { localStorage.setItem("radar2:" + k, JSON.stringify(v)); } catch {} } };
@@ -364,7 +364,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
   // ---------- views ----------
   function metaRow(s, opts = {}){
     const names = [...new Set((s.articles || []).map((a) => a.o))], n = s.source_count || names.length || 1, L = lvl(s);
-    return `<div class="meta">${L >= 2 ? `<span class="lvl l${L}">${LVN[L]}</span><span class="sep">·</span>` : ""}<span class="stack">${names.slice(0, 3).map(logo).join("")}</span><span class="nsrc">${n > 1 ? `${n} מקורות` : esc(names[0] || "")}</span>${opts.isNew ? `<span class="newb">חדש</span>` : ""}<span class="tm">${ago(s.last_seen)}</span></div>`;
+    return `<div class="meta">${L >= 2 ? `<span class="lvl l${L}">${LVN[L]}</span><span class="sep">·</span>` : ""}<span class="stack">${names.slice(0, 3).map(logo).join("")}</span><span class="nsrc">${n > 1 ? `${n} מקורות` : esc(names[0] || "")}</span>${opts.isNew ? `<span class="newb">חדש</span>` : ""}<span class="tm">${ago(s.first_seen)}</span></div>`;
   }
   function viewNow(){
     if (!S.data) return `<div class="skel" style="height:118px;margin-top:10px"></div><div class="skel" style="height:300px;margin-top:40px"></div>`;
@@ -383,9 +383,9 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
     // the main things
     const since = S.prevVisit && now() - S.prevVisit > 20 * 60000 && now() - S.prevVisit < 36 * 3600e3 ? S.prevVisit : 0;
     const pool = all.filter((s) => lvl(s) >= 2 || (s.source_count || 0) >= 4).sort(rank);
-    let top = since ? pool.filter((s) => Date.parse(s.last_seen) - S.skew > since).slice(0, 3) : [];
+    let top = since ? pool.filter((s) => Date.parse(s.first_seen) - S.skew > since).slice(0, 3) : [];
     let label = since ? `מאז הביקור הקודם · ${ago(new Date(since + S.skew).toISOString())}` : "";
-    if (top.length < 2) { const win = [6, 12, 24].find((hh) => pool.filter((s) => now() - Date.parse(s.last_seen) < hh * 3600e3).length >= 3) || 36; top = pool.filter((s) => now() - Date.parse(s.last_seen) < win * 3600e3).slice(0, 3); label = `ב־${win} השעות האחרונות`; }
+    if (top.length < 2) { const win = [6, 12, 24].find((hh) => pool.filter((s) => now() - Date.parse(s.first_seen) < hh * 3600e3).length >= 3) || 36; top = pool.filter((s) => now() - Date.parse(s.first_seen) < win * 3600e3).slice(0, 3); label = `ב־${win} השעות האחרונות`; }
     S.topIds = new Set(top.map((s) => s.id));
     h += `<div class="sh"><h2>העיקר</h2><span>${esc(label)}</span></div><div class="dg">`;
     h += top.length ? top.map((s, i) => { const L = lvl(s), isNew = since && Date.parse(s.first_seen) - S.skew > since;
@@ -399,7 +399,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
     if (S.war) { const last = sec.d24[0];
       h += `<div class="sh"><h2>ביטחון</h2></div><button class="sec ${sec.cls}" data-tab-go="sec"><span class="ic">${ICON.shield}</span><span class="tx"><b>${sec.name}</b><span dir="auto">${sec.d24.length ? `${sec.d24.length} אירועים ב־24 שעות${last ? " · אחרון: " + esc(cleanT(last.t)) : ""}` : "אין אירועים משמעותיים ב־24 השעות האחרונות"}</span></span>${ICON.chev}</button>`; }
     // more
-    const rest = all.filter((s) => !S.topIds.has(s.id) && now() - Date.parse(s.last_seen) < 24 * 3600e3).sort((a, b) => Date.parse(b.last_seen) - Date.parse(a.last_seen)).filter((s) => lvl(s) >= 2 || (s.source_count || 0) >= 2).slice(0, 6);
+    const rest = all.filter((s) => !S.topIds.has(s.id) && now() - Date.parse(s.first_seen) < 24 * 3600e3).sort((a, b) => Date.parse(b.first_seen) - Date.parse(a.first_seen)).filter((s) => lvl(s) >= 2 || (s.source_count || 0) >= 2).slice(0, 6);
     if (rest.length) h += `<div class="sh"><h2>עוד היום</h2><button class="more" data-tab-go="feed">הכול</button></div><div class="ls">${rest.map(itemRow).join("")}</div><button class="allbtn" data-tab-go="feed">לכל העדכונים</button>`;
     h += foot();
     return h;
@@ -414,7 +414,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
     if (S.onlyImp) { pol = pol.filter((s) => lvl(s) >= 2 || (s.source_count || 0) >= 3); }
     if (q) { pol = pol.filter((s) => (titleOf(s) + " " + (s.summary || "") + " " + (s.articles || []).map((a) => a.t).join(" ")).toLowerCase().includes(q)); war = war.filter((it) => (it.t + " " + (it.d || "")).toLowerCase().includes(q)); }
     let rows = [];
-    if (S.feedKind !== "sec") rows.push(...pol.map((s) => ({ t: Date.parse(s.last_seen), h: itemRow(s) })));
+    if (S.feedKind !== "sec") rows.push(...pol.map((s) => ({ t: Date.parse(s.first_seen), h: itemRow(s) })));
     if (S.feedKind !== "pol") rows.push(...war.map((it) => ({ t: Date.parse(it.f), h: warRow(it) })));
     rows.sort((a, b) => b.t - a.t);
     let h = `<div class="ctl"><div class="seg">${[["all", "הכל"], ["pol", "פוליטיקה"], ["sec", "ביטחון"]].map(([k, l]) => `<button data-kind="${k}" class="${S.feedKind === k ? "on" : ""}">${l}</button>`).join("")}</div>
@@ -487,7 +487,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
   function closeSheet(fromPop){ const sh = $("sheet"); if (!sh.classList.contains("open")) return; sh.classList.remove("open"); document.body.classList.remove("lock"); if (!fromPop && history.state && history.state.sheet) { try { history.back(); } catch {} } }
   function rep(o, t, u, when){ return `<a class="rep" href="${esc(u)}" target="_blank" rel="noopener">${logo(o)}<span class="x"><span class="o"><span>${esc(o)}</span>${when ? `<span>· ${hhmm(when)}</span>` : ""}</span><span class="t" dir="auto">${esc(cleanT(t))}</span></span>${ICON.ext}</a>`; }
   function openStory(id){ const s = stories().find((x) => x.id === id); if (!s) return; const L = lvl(s), arts = (s.articles || []);
-    openSheet(`<div class="sk2">${L >= 2 ? `<span class="lvl l${L}">${LVN[L]}</span><span>·</span>` : ""}<span>${s.source_count || arts.length} מקורות</span><span>·</span><span>עודכן ${ago(s.last_seen)}</span></div><h3 dir="auto">${esc(titleOf(s))}</h3>${s.ai && s.summary ? `<div class="ssum" dir="auto">${esc(s.summary)}</div>` : ""}${s.ai && s.why ? `<div class="swhy" dir="auto">${esc(s.why)}</div>` : ""}<div class="rh">הדיווחים</div>${arts.map((a) => rep(a.o, a.t, a.u, a.p)).join("")}`); }
+    openSheet(`<div class="sk2">${L >= 2 ? `<span class="lvl l${L}">${LVN[L]}</span><span>·</span>` : ""}<span>${s.source_count || arts.length} מקורות</span><span>·</span><span>עודכן ${ago(s.first_seen)}</span></div><h3 dir="auto">${esc(titleOf(s))}</h3>${s.ai && s.summary ? `<div class="ssum" dir="auto">${esc(s.summary)}</div>` : ""}${s.ai && s.why ? `<div class="swhy" dir="auto">${esc(s.why)}</div>` : ""}<div class="rh">הדיווחים</div>${arts.map((a) => rep(a.o, a.t, a.u, a.p)).join("")}`); }
   function openWar(id){ const it = warItems().find((x) => String(x.id) === String(id)); if (!it) return; const a = (it.a || []).filter((x) => ARENA[x]).map((x) => ARENA[x].n);
     openSheet(`<div class="sk2"><span class="tag ts">${esc(a.join(" · ") || "ביטחון")}</span><span>${it.n || 1} כלי תקשורת</span><span>·</span><span>${hhmm(it.f)}</span></div><h3 dir="auto">${esc(cleanT(it.t))}</h3>${it.d ? `<div class="ssum" dir="auto">${esc(it.d)}</div>` : ""}<div class="rh">הדיווחים</div>${rep(it.o, it.t, it.u, it.f)}${(it.more || []).map((m) => rep(m.o, m.t, m.u)).join("")}`); }
 
